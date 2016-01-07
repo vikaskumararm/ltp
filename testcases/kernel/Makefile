@@ -49,12 +49,15 @@ SUBDIRS			+= connectors \
 			   logging \
 			   mem \
 			   numa \
-			   pty \
 			   sched \
 			   security \
 			   sound \
 			   tracing \
 			   uevents \
+
+ifneq ($(LIBC),musl)
+SUBDIRS			+= pty
+endif
 
 ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
 SUBDIRS			+= power_management
