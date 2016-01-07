@@ -38,6 +38,7 @@
 static struct sockaddr_in *conn_addr, *accept_addr;
 static int listening_fd;
 
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if !(__GLIBC_PREREQ(2, 10))
 static int
 accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
@@ -55,6 +56,7 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
 	return tst_syscall(__NR_accept4, fd, sockaddr, addrlen, flags);
 #endif
 }
+#endif
 #endif
 
 static int create_listening_socket(void)
@@ -114,11 +116,16 @@ static void verify_accept4(unsigned int nr)
 	SAFE_CONNECT(connfd, (struct sockaddr *)conn_addr, sizeof(*conn_addr));
 	addrlen = sizeof(*accept_addr);
 
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if !(__GLIBC_PREREQ(2, 10))
 	TEST(accept4_01(listening_fd, (struct sockaddr *)accept_addr, &addrlen,
 				tcase->cloexec | tcase->nonblock));
 #else
 	TEST(accept4(listening_fd, (struct sockaddr *)accept_addr, &addrlen,
+				tcase->cloexec | tcase->nonblock));
+#endif
+#else
+	TEST(accept4(listening_fd, (struct sockaddr *)&claddr, &addrlen,
 				tcase->cloexec | tcase->nonblock));
 #endif
 	if (TST_RET == -1) {
