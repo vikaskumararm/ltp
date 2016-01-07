@@ -67,8 +67,10 @@ do { \
 	tst_resm((TEST_RETURN == -1 ? TPASS : TFAIL) | TTERRNO, #t); \
 } while (0)
 
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if !(__GLIBC_PREREQ(2, 7))
 #define CPU_FREE(ptr)	free(ptr)
+#endif
 #endif
 
 int main(int ac, char **av)
@@ -96,17 +98,26 @@ static void do_test(void)
 	pid_t unused_pid;
 	unsigned len;
 
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if __GLIBC_PREREQ(2, 7)
 realloc:
 	mask = CPU_ALLOC(nrcpus);
 #else
 	mask = malloc(sizeof(cpu_set_t));
 #endif
+#else
+	mask = malloc(sizeof(cpu_set_t));
+#endif
 	if (mask == NULL)
 		tst_brkm(TFAIL | TTERRNO, cleanup, "fail to get enough memory");
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if __GLIBC_PREREQ(2, 7)
 	len = CPU_ALLOC_SIZE(nrcpus);
 	CPU_ZERO_S(len, mask);
+#else
+	len = sizeof(cpu_set_t);
+	CPU_ZERO(mask);
+#endif
 #else
 	len = sizeof(cpu_set_t);
 	CPU_ZERO(mask);
@@ -115,11 +126,18 @@ realloc:
 	TEST(sched_getaffinity(0, len, mask));
 	if (TEST_RETURN == -1) {
 		CPU_FREE(mask);
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if __GLIBC_PREREQ(2, 7)
 		if (errno == EINVAL && nrcpus < (1024 << 8)) {
 			nrcpus = nrcpus << 2;
 			goto realloc;
 		}
+#else
+		if (errno == EINVAL)
+			tst_resm(TFAIL, "NR_CPUS > 1024, we'd better use a "
+				 "newer glibc(>= 2.7)");
+		else
+#endif
 #else
 		if (errno == EINVAL)
 			tst_resm(TFAIL, "NR_CPUS > 1024, we'd better use a "
@@ -132,8 +150,12 @@ realloc:
 		tst_resm(TINFO, "cpusetsize is %d", len);
 		tst_resm(TINFO, "mask.__bits[0] = %lu ", mask->__bits[0]);
 		for (i = 0; i < num; i++) {
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if __GLIBC_PREREQ(2, 7)
 			TEST(CPU_ISSET_S(i, len, mask));
+#else
+			TEST(CPU_ISSET(i, mask));
+#endif
 #else
 			TEST(CPU_ISSET(i, mask));
 #endif
@@ -144,8 +166,12 @@ realloc:
 		}
 	}
 
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
 #if __GLIBC_PREREQ(2, 7)
 	CPU_ZERO_S(len, mask);
+#else
+	CPU_ZERO(mask);
+#endif
 #else
 	CPU_ZERO(mask);
 #endif
