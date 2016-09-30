@@ -19,4 +19,8 @@
 top_srcdir		?= ../../../../../../..
 
 include	$(top_srcdir)/include/mk/env_pre.mk
+
+FILTER_OUT_DIRS += tirpc_auth_authdes_seccreate \
+		   tirpc_auth_authdes_create
+
 include $(top_srcdir)/include/mk/generic_trunk_target.mk
