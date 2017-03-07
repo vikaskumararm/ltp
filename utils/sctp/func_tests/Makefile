@@ -28,7 +28,10 @@ CPPFLAGS	+= -I$(abs_srcdir)/../include -I$(abs_srcdir)/../testlib -DLTP
 
 LDFLAGS		+= $(addprefix -L$(abs_builddir)/../,lib testlib)
 
-LDLIBS		+= -lsctputil -lsctp -lpthread
+LDLIBS		+= -lsctputil -lsctp
+ifneq ($(ANDROID),1)
+LDLIBS		+= -lpthread
+endif
 
 V4_TARGETS	:= $(patsubst $(abs_srcdir)/%.c,%,$(wildcard $(abs_srcdir)/*.c))
 
