@@ -59,7 +59,7 @@ test_body()
 			return
 		fi
 
-		check_connectivity $cnt restore_ip || return
+		check_connectivity_interval $cnt restore_ip || return
 
 		cnt=$(($cnt + 1))
 	done

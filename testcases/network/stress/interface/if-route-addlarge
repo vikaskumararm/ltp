@@ -93,7 +93,7 @@ test_body()
 			return
 		fi
 
-		check_connectivity $cnt || return
+		check_connectivity_interval $cnt || return
 
 		# Check the background TCP traffic
 		pgrep -x netstress > /dev/null || make_background_tcp_traffic

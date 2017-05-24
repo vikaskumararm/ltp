@@ -18,12 +18,9 @@
 
 TST_CLEANUP="cleanup"
 
-. test_net.sh
+. test_stress_net.sh
 
 ipver=${TST_IPV6:-4}
-
-IPV4_NET16_UNUSED=${IPV4_NET16_UNUSED:-"10.23"}
-IPV6_NET32_UNUSED=${IPV6_NET32_UNUSED:-"fd00:23"}
 
 setup()
 {
@@ -46,28 +43,20 @@ make_background_tcp_traffic()
 	tst_rhost_run -b -c "netstress -l -H $(tst_ipaddr) -g $port"
 }
 
-check_connectivity()
+# check_connectivity_interval [CNT] [RESTORE]
+# CNT: loop step
+# RESTORE: whether restore ip addr (not required, default false)
+check_connectivity_interval()
 {
 	local cnt="$1"
-	local restore="$2"
+	local restore="${2:-}"
 
 	[ $CHECK_INTERVAL -eq 0 ] && return
 	[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && return
 
-	tst_resm TINFO "check connectivity through $(tst_iface) on step $cnt"
-
+	tst_resm TINFO "check connectivity step $cnt"
 	[ -n "$restore" ] && restore_ipaddr
 
-	tst_ping
-	if [ $? -ne 0 ]; then
-		tst_resm TFAIL "$(tst_iface) is broken"
-		return 1
-	fi
-	return 0
-}
-
-restore_ipaddr()
-{
-	tst_restore_ipaddr || return $?
-	tst_wait_ipv6_dad
+	check_connectivity
+	return $?
 }

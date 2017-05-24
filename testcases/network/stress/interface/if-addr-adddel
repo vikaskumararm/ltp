@@ -88,7 +88,7 @@ test_body()
 			return
 		fi
 
-		check_connectivity $cnt || return
+		check_connectivity_interval $cnt || return
 
 		cnt=$(($cnt + 1))
 
