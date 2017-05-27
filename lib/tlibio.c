@@ -107,11 +107,11 @@
 #include <sys/uio.h>		/* readv(2)/writev(2) */
 #include <string.h>		/* bzero */
 #endif
-#if defined(__linux__) || defined(__sun) || defined(__hpux) || defined(_AIX)
-#if !defined(UCLINUX) && !defined(__UCLIBC__)
+
+#if HAVE_AIO_H
 #include <aio.h>
 #endif
-#endif
+
 #include <stdlib.h>		/* atoi, abs */
 
 #include "tlibio.h"		/* defines LIO* marcos */
