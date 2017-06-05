@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+#include "mq.h"
+
 #include "tst_test.h"
 #include "tst_safe_posix_ipc.h"
 
@@ -36,67 +38,71 @@
 #define QUEUE_NAME	"/test_mqueue"
 
 static char *str_debug;
-static char smsg[MAX_MSGSIZE];
+static struct sigevent ev;
 
 static volatile sig_atomic_t notified, cmp_ok;
 static siginfo_t info;
 
-enum test_type {
-	NORMAL,
-	FD_NONE,
-	FD_NOT_EXIST,
-	FD_FILE,
-	ALREADY_REGISTERED,
-};
-
 struct test_case {
+	void (*setup)(void);
+	void (*cleanup)(void);
+	int fd;
 	int notify;
 	int ttype;
-	const char *desc;
 	int ret;
 	int err;
 };
 
-#define TYPE_NAME(x) .ttype = x, .desc = #x
+static void create_queue_notify_queue(void)
+{
+	create_queue();
+	if (mq_notify(fd, &ev) == -1)
+		tst_brk(TBROK | TERRNO, "mq_notify(%d, %p) failed", fd, &ev);
+}
+
 static struct test_case tcase[] = {
 	{
-		TYPE_NAME(NORMAL),
+		.setup = create_queue,
+		.cleanup = unlink_queue,
 		.notify = SIGEV_NONE,
 		.ret = 0,
 		.err = 0,
 	},
 	{
-		TYPE_NAME(NORMAL),
+		.setup = create_queue,
+		.cleanup = unlink_queue,
 		.notify = SIGEV_SIGNAL,
 		.ret = 0,
 		.err = 0,
 	},
 	{
-		TYPE_NAME(NORMAL),
+		.setup = create_queue,
+		.cleanup = unlink_queue,
 		.notify = SIGEV_THREAD,
 		.ret = 0,
 		.err = 0,
 	},
 	{
-		TYPE_NAME(FD_NONE),
+		.fd = -1,
 		.notify = SIGEV_NONE,
 		.ret = -1,
 		.err = EBADF,
 	},
 	{
-		TYPE_NAME(FD_NOT_EXIST),
+		.fd = INT_MAX - 1,
 		.notify = SIGEV_NONE,
 		.ret = -1,
 		.err = EBADF,
 	},
 	{
-		TYPE_NAME(FD_FILE),
+		.setup = open_fd,
 		.notify = SIGEV_NONE,
 		.ret = -1,
 		.err = EBADF,
 	},
 	{
-		TYPE_NAME(ALREADY_REGISTERED),
+		.setup = create_queue_notify_queue,
+		.cleanup = unlink_queue,
 		.notify = SIGEV_NONE,
 		.ret = -1,
 		.err = EBUSY,
@@ -131,8 +137,7 @@ static void tfunc(union sigval sv)
 
 static void do_test(unsigned int i)
 {
-	int rc, fd = -1;
-	struct sigevent ev;
+	int rc;
 	struct sigaction sigact;
 	struct timespec abs_timeout;
 	struct test_case *tc = &tcase[i];
@@ -149,22 +154,11 @@ static void do_test(unsigned int i)
 	 */
 	mq_unlink(QUEUE_NAME);
 
-	switch (tc->ttype) {
-	case FD_NONE:
-		break;
-	case FD_NOT_EXIST:
-		fd = INT_MAX - 1;
-		break;
-	case FD_FILE:
-		fd = open("/", O_RDONLY);
-		if (fd < 0) {
-			tst_res(TBROK | TERRNO, "can't open \"/\".");
-			goto CLEANUP;
-		}
-		break;
-	default:
-		fd = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
-	}
+	if (tc->fd)
+		fd = tc->fd;
+
+	if (tc->setup)
+		tc->setup();
 
 	ev.sigev_notify = tc->notify;
 
@@ -185,14 +179,6 @@ static void do_test(unsigned int i)
 		ev.sigev_notify_attributes = NULL;
 		ev.sigev_value.sival_int = USER_DATA;
 		break;
-	}
-
-	if (tc->ttype == ALREADY_REGISTERED) {
-		rc = mq_notify(fd, &ev);
-		if (rc < 0) {
-			tst_res(TBROK | TERRNO, "mq_notify failed");
-			goto CLEANUP;
-		}
 	}
 
 	/* test */
@@ -222,12 +208,11 @@ static void do_test(unsigned int i)
 	}
 
 	if ((TEST_RETURN != 0 && TEST_ERRNO != tc->err) || !cmp_ok) {
-		tst_res(TFAIL | TTERRNO, "%s r/w check returned: %ld, "
-			"expected: %d, expected errno: %s (%d)", tc->desc,
+		tst_res(TFAIL | TTERRNO, "mq_notify r/w check returned: %ld, "
+			"expected: %d, expected errno: %s (%d)",
 			TEST_RETURN, tc->ret, tst_strerrno(tc->err), tc->err);
 	} else {
-		tst_res(TPASS | TTERRNO, "%s returned: %ld",
-			tc->desc, TEST_RETURN);
+		tst_res(TPASS | TTERRNO, "mq_notify returned: %ld", TEST_RETURN);
 	}
 
 CLEANUP:
