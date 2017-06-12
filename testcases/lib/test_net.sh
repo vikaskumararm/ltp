@@ -34,6 +34,13 @@ init_ltp_netspace()
 		ROD ns_exec $pid net,mnt mount -t sysfs none /sys
 		ROD ns_ifmove ltp_ns_veth1 $pid
 		ROD ns_exec $pid net,mnt ip li set lo up
+
+		ROD modprobe dummy
+		ROD ip link set dummy0 up
+		ROD ip addr add $RHOST_IPV4_UNUSED/16 dev dummy0
+		tst_resm TINFO "route traffic of ${IPV4_NET16_UNUSED}.$OCTET_3_IPV4_UNUSED/16 unused via dummy0 interface, $RHOST_IPV4_UNUSED"
+		ROD ip addr add $RHOST_IPV6_UNUSED/32 dev dummy0
+		tst_resm TINFO "route traffic of ${IPV6_NET32_UNUSED}:$OCTET_3_IPV6_UNUSED/32 unused via dummy0 interface, $RHOST_IPV6_UNUSED"
 	fi
 
 	LHOST_IFACES="${LHOST_IFACES:-ltp_ns_veth2}"
