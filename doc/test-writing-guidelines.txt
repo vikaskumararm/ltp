@@ -1692,6 +1692,17 @@ and 'tst_resm TFAIL' otherwise. 'EXPECT_FAIL' does vice versa.
 Output redirection rules are the same as for the 'ROD' function. In addition
 to that, 'EXPECT_FAIL' always redirects the command's stderr to '/dev/null'.
 
+Both EXPECT_PASS and EXPECT_FAIL return command's exit value, which can be
+useful for returning from  testing in loop:
+[source,sh]
+-------------------------------------------------------------------------------
+do_test()
+{
+	while i in $(seq 1 5); do
+	EXPECT_PASS command $i || return
+}
+-------------------------------------------------------------------------------
+
 tst_kvcmp
 +++++++++
 

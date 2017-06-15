@@ -269,23 +269,31 @@ ROD()
 
 EXPECT_PASS()
 {
+	local ret
+
 	ROD_BASE "$@"
-	if [ $? -eq 0 ]; then
+	ret=$?
+	if [ $ret -eq 0 ]; then
 		tst_resm TPASS "$@ passed as expected"
 	else
 		tst_resm TFAIL "$@ failed unexpectedly"
 	fi
+	return $ret
 }
 
 EXPECT_FAIL()
 {
+	local ret
+
 	# redirect stderr since we expect the command to fail
 	ROD_BASE "$@" 2> /dev/null
-	if [ $? -ne 0 ]; then
+	ret=$?
+	if [ $ret -ne 0 ]; then
 		tst_resm TPASS "$@ failed as expected"
 	else
 		tst_resm TFAIL "$@ passed unexpectedly"
 	fi
+	return $ret
 }
 
 tst_mkfs()

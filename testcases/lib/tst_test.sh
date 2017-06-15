@@ -132,23 +132,29 @@ ROD()
 
 EXPECT_PASS()
 {
+	local ret
 	tst_rod "$@"
-	if [ $? -eq 0 ]; then
+	ret=$?
+	if [ $ret -eq 0 ]; then
 		tst_res TPASS "$@ passed as expected"
 	else
 		tst_res TFAIL "$@ failed unexpectedly"
 	fi
+	return $ret
 }
 
 EXPECT_FAIL()
 {
+	local ret
 	# redirect stderr since we expect the command to fail
 	tst_rod "$@" 2> /dev/null
-	if [ $? -ne 0 ]; then
+	ret=$?
+	if [ $ret -ne 0 ]; then
 		tst_res TPASS "$@ failed as expected"
 	else
 		tst_res TFAIL "$@ passed unexpectedly"
 	fi
+	return $ret
 }
 
 tst_umount()
