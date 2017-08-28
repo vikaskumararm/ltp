@@ -168,12 +168,9 @@ static void set_global_mempolicy(int mempolicy)
 	&& HAVE_MPOL_CONSTANTS
 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
 	int num_nodes, *nodes;
-	int ret;
 
 	if (mempolicy) {
-		ret = get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
-		if (ret != 0)
-			tst_brk(TBROK|TERRNO, "get_allowed_nodes_arr");
+		SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
 		if (num_nodes < 2) {
 			tst_res(TINFO, "mempolicy need NUMA system support");
 			free(nodes);
@@ -560,9 +557,7 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
 #endif
 
-	ret = get_allowed_nodes_arr(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
-	if (ret != 0)
-		tst_brk(TBROK|TERRNO, "get_allowed_nodes_arr");
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS|NH_CPUS, &num_nodes, &nodes);
 	if (num_nodes < 2) {
 		tst_res(TINFO, "need NUMA system support");
 		free(nodes);

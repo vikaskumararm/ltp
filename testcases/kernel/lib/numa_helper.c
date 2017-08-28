@@ -295,9 +295,7 @@ int is_numa(void (*cleanup_fn)(void), int flag, int min_nodes)
 	int ret;
 	int numa_nodes = 0;
 
-	ret = get_allowed_nodes_arr(flag, &numa_nodes, NULL);
-	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, cleanup_fn, "get_allowed_nodes_arr");
+	ret = SAFE_GET_ALLOWED_NODES_ARR(flag, &numa_nodes, NULL);
 
 	if (numa_nodes >= min_nodes)
 		return 1;

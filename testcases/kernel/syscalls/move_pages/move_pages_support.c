@@ -22,6 +22,7 @@
 #include <semaphore.h>
 #include "test.h"
 #include "move_pages_support.h"
+#include "tst_safe_numa.h"
 
 long get_page_size(void)
 {
@@ -116,12 +117,8 @@ int alloc_pages_linear(void **pages, unsigned int num)
 	unsigned int n = 0;
 	int num_allowed_nodes;
 	int *allowed_nodes;
-	int ret;
 
-	ret = get_allowed_nodes_arr(NH_MEMS, &num_allowed_nodes,
-				    &allowed_nodes);
-	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes(): %d", ret);
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS, &num_allowed_nodes, &allowed_nodes);
 
 	for (i = 0; i < num; i++) {
 		nodes[i] = allowed_nodes[n];
@@ -220,12 +217,8 @@ void verify_pages_linear(void **pages, int *status, unsigned int num)
 	int nodes[num];
 	int num_allowed_nodes;
 	int *allowed_nodes;
-	int ret;
 
-	ret = get_allowed_nodes_arr(NH_MEMS, &num_allowed_nodes,
-				    &allowed_nodes);
-	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes(): %d", ret);
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS, &num_allowed_nodes, &allowed_nodes);
 
 	for (i = 0; i < num; i++) {
 		nodes[i] = allowed_nodes[n];
@@ -394,11 +387,8 @@ void check_config(unsigned int min_nodes)
 {
 #if HAVE_NUMA_H && HAVE_NUMAIF_H
 	int num_allowed_nodes;
-	int ret;
 
-	ret = get_allowed_nodes_arr(NH_MEMS, &num_allowed_nodes, NULL);
-	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes(): %d", ret);
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS, &num_allowed_nodes, NULL);
 
 	if (numa_available() < 0) {
 		tst_brkm(TCONF, NULL, "NUMA support is not available");

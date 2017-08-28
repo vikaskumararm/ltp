@@ -128,15 +128,12 @@ static void test_invalid_mem(void)
 static void test_invalid_nodes(void)
 {
 	int *nodes;
-	int num_nodes, ret, i;
+	int num_nodes, i;
 	int invalid_node = 0;
 	unsigned long *old_nodes, *new_nodes;
 
 	tst_resm(TINFO, "test_invalid_nodes");
-	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, cleanup,
-			 "get_allowed_nodes_arr: %d", ret);
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS, &num_nodes, &nodes);
 
 	/* get first node which is not in nodes */
 	for (i = 0; i < num_nodes; i++, invalid_node++)
@@ -231,7 +228,7 @@ static void setup(void)
 
 	ret = get_allowed_nodes(NH_MEMS, 1, &node);
 	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes_arr: %d",
+		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes: %d",
 			 ret);
 
 	sane_max_node = LTP_ALIGN(get_max_node(), sizeof(unsigned long)*8);

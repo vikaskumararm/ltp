@@ -335,7 +335,7 @@ int main(int argc, char *argv[])
 
 static void setup(void)
 {
-	int ret, i, j;
+	int i, j;
 	int pagesize = getpagesize();
 	void *p;
 
@@ -345,9 +345,7 @@ static void setup(void)
 	if (numa_available() == -1)
 		tst_brkm(TCONF, NULL, "NUMA not available");
 
-	ret = get_allowed_nodes_arr(NH_MEMS, &num_nodes, &nodes);
-	if (ret < 0)
-		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes(): %d", ret);
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS, &num_nodes, &nodes);
 
 	if (num_nodes < 2)
 		tst_brkm(TCONF, NULL, "at least 2 allowed NUMA nodes"

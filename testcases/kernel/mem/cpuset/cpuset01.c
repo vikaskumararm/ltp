@@ -85,8 +85,8 @@ static void setup(void)
 {
 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
 	ncpus = count_cpu();
-	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
-		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
+
+	SAFE_GET_ALLOWED_NODES_ARR(NH_MEMS | NH_CPUS, &nnodes, &nodes);
 	if (nnodes <= 1)
 		tst_brk(TCONF, "requires a NUMA system.");
 }
