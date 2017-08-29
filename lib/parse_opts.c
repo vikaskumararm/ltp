@@ -36,7 +36,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
+
+/* TODO: better check for sys/signal.h header */
+#if ! defined(__ANDROID_API__) || __ANDROID_API__ >= 21
 #include <sys/signal.h>
+#endif
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/time.h>
