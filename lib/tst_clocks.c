@@ -26,6 +26,17 @@
 
 #include "tst_clocks.h"
 
+/*
+ * for __ANDROID_API__ < 21
+ * TODO: into some android specific header file
+ */
+#ifndef SYS_clock_getres
+#define SYS_clock_getres __NR_clock_getres
+#endif
+#ifndef SYS_clock_gettime
+#define SYS_clock_gettime __NR_clock_gettime
+#endif
+
 int tst_clock_getres(clockid_t clk_id, struct timespec *res)
 {
 	return syscall(SYS_clock_getres, clk_id, res);
