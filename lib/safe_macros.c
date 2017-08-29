@@ -5,7 +5,12 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/mount.h>
+
+/* TODO: better check for sys/xattr.h header */
+#if ! defined(__ANDROID_API__) || __ANDROID_API__ >= 21
 #include <sys/xattr.h>
+#endif
+
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
@@ -381,6 +386,8 @@ int safe_link(const char *file, const int lineno,
 	return rval;
 }
 
+/* TODO: better check for linkat() function */
+#if ! defined(__ANDROID_API__) || __ANDROID_API__ >= 21
 int safe_linkat(const char *file, const int lineno,
 		void (cleanup_fn)(void), int olddirfd, const char *oldpath,
 		int newdirfd, const char *newpath, int flags)
@@ -398,6 +405,7 @@ int safe_linkat(const char *file, const int lineno,
 
 	return rval;
 }
+#endif
 
 ssize_t safe_readlink(const char *file, const int lineno,
 		  void (cleanup_fn)(void), const char *path,
@@ -798,6 +806,8 @@ int safe_getpriority(const char *file, const int lineno, int which, id_t who)
 	return rval;
 }
 
+/* TODO: better check for sys/xattr.h header */
+#if ! defined(__ANDROID_API__) || __ANDROID_API__ >= 21
 int safe_setxattr(const char *file, const int lineno, const char *path,
 		  const char *name, const void *value, size_t size, int flags)
 {
@@ -881,6 +891,7 @@ int safe_removexattr(const char *file, const int lineno, const char *path,
 
 	return rval;
 }
+#endif
 
 int safe_fsync(const char *file, const int lineno, int fd)
 {
