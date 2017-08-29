@@ -19,6 +19,11 @@
 #include <sys/mount.h>
 #include <stdint.h>
 
+/* TODO: check whether needed for all API versions */
+#ifdef __ANDROID__
+#include <linux/fs.h>
+#endif
+
 #include "tst_test.h"
 
 static void do_test(void)

@@ -31,6 +31,12 @@
 #include <linux/loop.h>
 #include <stdint.h>
 #include <inttypes.h>
+
+/* TODO: check whether needed for all API versions */
+#ifdef __ANDROID__
+#include <linux/fs.h>
+#endif
+
 #include "test.h"
 #include "safe_macros.h"
 
