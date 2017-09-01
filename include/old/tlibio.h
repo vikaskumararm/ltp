@@ -136,17 +136,15 @@ int  lio_random_methods(long mask);
 #include <sys/iosw.h>
 int  lio_wait4asyncio(int method, int fd, struct iosw **statptr);
 int  lio_check_asyncio(char *io_type, int size, struct iosw *status);
-#endif /* CRAY */
-#if defined (sgi)
+#elif HAVE_AIO_H
 #include <aio.h>
+#ifdef sgi
 int  lio_wait4asyncio(int method, int fd, aiocb_t *aiocbp);
 int  lio_check_asyncio(char *io_type, int size, aiocb_t *aiocbp, int method);
-#endif /* sgi */
-#if defined(__linux__) && !defined(__UCLIBC__)
-#include <aio.h>
+#else
 int  lio_wait4asyncio(int method, int fd, struct aiocb *aiocbp);
 int  lio_check_asyncio(char *io_type, int size, struct aiocb *aiocbp, int method);
-#endif
+#endif /* aio.h */
 
 /*
  * Define the structure that contains the infomation that is used

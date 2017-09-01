@@ -31,6 +31,7 @@ AC_PROG_YACC
 AC_PREFIX_DEFAULT(/opt/ltp)
 
 AC_CHECK_HEADERS([ \
+    aio.h \
     dmapi.h \
     ifaddrs.h \
     libaio.h \
