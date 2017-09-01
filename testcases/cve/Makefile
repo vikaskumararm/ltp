@@ -30,4 +30,8 @@ cve-2014-0196:  LDLIBS += -lrt -lutil
 cve-2017-2671:	CFLAGS += -pthread
 cve-2017-2671:	LDLIBS += -lrt
 
+ifeq ($(ANDROID),1)
+FILTER_OUT_MAKE_TARGETS	+= cve-2017-5669
+endif
+
 include $(top_srcdir)/include/mk/generic_leaf_target.mk
