@@ -18,6 +18,10 @@
 #ifndef TST_SAFE_PTHREAD_H__
 #define TST_SAFE_PTHREAD_H__
 
+#ifdef __ANDROID_API__
+#include <pthread.h>
+#endif
+
 /*
  * Macro to use for making functions called only once in
  * multi-threaded tests such as init or cleanup function.
