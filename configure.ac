@@ -45,6 +45,7 @@ AC_CHECK_HEADERS([ \
     sys/inotify.h \
     sys/fanotify.h \
     sys/jfsdmapi.h \
+    sys/personality.h \
     sys/prctl.h \
 ])
 
