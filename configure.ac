@@ -43,6 +43,7 @@ AC_CHECK_HEADERS([ \
     sys/epoll.h \
     sys/inotify.h \
     sys/fanotify.h \
+    sys/personality.h \
     sys/prctl.h \
 ])
 
