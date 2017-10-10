@@ -25,16 +25,10 @@
 *
 */
 
-#include "config.h"
 #include <errno.h>
-#include <sys/types.h>
-#ifdef HAVE_KEYUTILS_H
-# include <keyutils.h>
-#endif
 
 #include "tst_test.h"
-
-#ifdef HAVE_KEYUTILS_H
+#include "lapi/keyctl.h"
 
 static int key;
 
@@ -64,9 +58,3 @@ static struct tst_test test = {
 	.setup = setup,
 	.test_all = verify_request_key,
 };
-
-#else
-
-TST_TEST_TCONF("keyutils.h was missing at compilation");
-
-#endif /* HAVE_LINUX_KEYCTL_H */
