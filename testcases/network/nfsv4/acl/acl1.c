@@ -19,8 +19,8 @@
 #include "config.h"
 #include "tst_res_flags.h"
 
+#include <tst_common.h>
 #ifdef HAVE_LIBACL
-
 #include <sys/acl.h>
 
 #define OP_READ 0x1
@@ -44,13 +44,11 @@ int do_file_op(char *filename)
 {
 	int exe;
 	int result;
-	uid_t uid;
 	result = 0;
 	FILE *fptr;
 	char str[256] = "./";
 	fptr = malloc(sizeof(FILE));
 
-	uid = geteuid();
 	strcat(str, filename);
 
 	exe = execl(str, NULL, NULL);
@@ -102,11 +100,7 @@ acl_t test_acl_default_create(void)
 	return acl;
 }
 
-static void report(testnum, expected, result, fail)
-int testnum;			/* test number */
-int expected;			/* expected result */
-int result;			/* actual result */
-int fail;			/* fail or warning */
+static void report(int testnum, int expected, int result)
 {
 	char *res;
 	if (expected == result) {
@@ -321,7 +315,7 @@ static void showstats(void)
 	       aclstat.failed);
 }
 
-int main(int argc, char *argv[])
+int main(int argc LTP_ATTRIBUTE_UNUSED, char *argv[])
 {
 	int result;
 	aclstat.ok = 0;
