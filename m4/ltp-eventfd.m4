@@ -22,13 +22,12 @@ dnl
 dnl LTP_CHECK_SYSCALL_EVENTFD
 dnl ----------------------------
 dnl
-AC_DEFUN([LTP_CHECK_SYSCALL_EVENTFD],
-[dnl
+AC_DEFUN([LTP_CHECK_SYSCALL_EVENTFD], [
 AH_TEMPLATE(HAVE_IO_SET_EVENTFD,
 [Define to 1 if you have the `io_set_eventfd' function.])
-AC_CHECK_HEADERS(libaio.h,[
-	AC_CHECK_LIB(aio,io_setup,[
-		AIO_LIBS="-laio"
+AC_CHECK_HEADERS(libaio.h, [
+	AC_CHECK_LIB(aio,io_setup, [
+		have_aio=yes
 		AC_MSG_CHECKING([io_set_eventfd is defined in aio library or aio header])
 		AC_TRY_LINK([#include <stdio.h>
                              #include <libaio.h>
@@ -38,6 +37,10 @@ AC_CHECK_HEADERS(libaio.h,[
 			    [AC_DEFINE(HAVE_IO_SET_EVENTFD)
 			     AC_MSG_RESULT(yes)],
                             [AC_MSG_RESULT(no)])],
-		AIO_LIBS="")])
-AC_SUBST(AIO_LIBS)
+		have_aio=no)])
+
+if test "x$have_aio" = "xyes"; then
+	AC_SUBST(AIO_LIBS, "-laio")
+	AC_DEFINE(HAVE_LIBAIO, 1, [Define whether libaio and it's headers are installed])
+fi
 ])
