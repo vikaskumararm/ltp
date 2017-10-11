@@ -35,11 +35,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
-#include "numa_helper.h"
-#include "mem.h"
 
-#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-	&& HAVE_MPOL_CONSTANTS
+#include "mem.h"
+#include "numa_helper.h"
+
+#if HAVE_LIBNUMA && defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION >= 2
 
 static int run = -1;
 static int sleep_millisecs = -1;
@@ -106,5 +106,5 @@ static struct tst_test test = {
 };
 
 #else /* no NUMA */
-	TST_TEST_TCONF("no NUMA development packages installed.");
+	TST_TEST_TCONF("test requires libnuma >= 2 and it's development packages");
 #endif

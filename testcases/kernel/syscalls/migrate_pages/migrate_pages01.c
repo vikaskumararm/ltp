@@ -55,7 +55,9 @@ option_t options[] = {
 	{NULL, NULL, NULL}
 };
 
-#if defined(__NR_migrate_pages) && HAVE_NUMA_H && HAVE_NUMAIF_H
+#if HAVE_LIBNUMA && defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION >= 2 \
+	&& defined(__NR_migrate_pages)
+
 static unsigned long *sane_old_nodes;
 static unsigned long *sane_new_nodes;
 static int sane_nodemask_size;
@@ -252,7 +254,7 @@ static void cleanup(void)
 #else /* __NR_migrate_pages */
 int main(void)
 {
-	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages"
-		 " or libnuma is not available");
+	tst_brkm(TCONF, NULL, "System doesn't support __NR_migrate_pages or "
+		 "libnuma or libnuma development packages are not available");
 }
 #endif

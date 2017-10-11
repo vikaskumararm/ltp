@@ -59,8 +59,7 @@
 #include "mem.h"
 #include "ksm_common.h"
 
-#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
-	&& HAVE_MPOL_CONSTANTS
+#if HAVE_LIBNUMA && HAVE_LINUX_MEMPOLICY_H
 
 static void verify_ksm(void)
 {
@@ -126,5 +125,5 @@ static struct tst_test test = {
 };
 
 #else /* no NUMA */
-	TST_TEST_TCONF("no NUMA development packages installed.");
+	TST_TEST_TCONF("test requires libnuma >= 2 and it's development packages");
 #endif
