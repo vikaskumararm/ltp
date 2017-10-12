@@ -29,9 +29,8 @@
  */
 
 #include "config.h"
-#if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H && \
+#if HAVE_NUMA_H && HAVE_NUMAIF_H && \
 	defined(LIBNUMA_API_VERSION) && LIBNUMA_API_VERSION >= 2
-#include <linux/mempolicy.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/mman.h>
