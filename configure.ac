@@ -41,7 +41,9 @@ AC_CHECK_HEADERS([ \
     linux/mempolicy.h \
     linux/module.h \
     linux/netlink.h \
+    linux/tcp.h \
     mm.h \
+    netinet/tcp.h \
     pthread.h \
     sys/epoll.h \
     sys/fanotify.h \

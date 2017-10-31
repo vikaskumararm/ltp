@@ -18,6 +18,8 @@
  *
  */
 
+#include "config.h"
+
 #include <pthread.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -31,6 +33,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+
+#ifdef HAVE_LINUX_TCP_H
+#include <linux/tcp.h>
+#elif defined(HAVE_NETINET_TCP_H)
+#include <netinet/tcp.h>
+#endif
 
 #include "lapi/posix_clocks.h"
 #include "tst_safe_pthread.h"
