@@ -225,6 +225,7 @@ tst_timeout()
 
 ROD_SILENT()
 {
+	echo "ROD: $@" >&2 # FIXME: debug
 	$@ > /dev/null 2>&1
 	if [ $? -ne 0 ]; then
 		tst_brkm TBROK "$@ failed"

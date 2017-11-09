@@ -93,6 +93,7 @@ tst_rhost_run()
 
 	local output=
 	local ret=0
+	echo "tst_rhost_run: $cmd" >&2 # FIXME: debug
 	if [ -n "${TST_USE_SSH:-}" ]; then
 		output=`ssh -n -q $user@$RHOST "sh -c \
 			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
@@ -446,8 +447,9 @@ tst_netload()
 	c_opts="${cs_opts}${c_opts}-a $c_num -r $c_requests -d $rfile -g $port"
 	s_opts="${cs_opts}${s_opts}-R $s_replies -g $port"
 
-	tst_resm TINFO "run server 'netstress $s_opts'"
-	tst_rhost_run -s -B -c "netstress $s_opts"
+	local log=/tmp/netstress.server
+	tst_resm TINFO "run server 'netstress $s_opts' ($log)"
+	tst_rhost_run -s -B -c "strace -f -o $log netstress $s_opts"
 
 	tst_resm TINFO "check that server port in 'LISTEN' state"
 	local sec_waited=
@@ -469,8 +471,9 @@ tst_netload()
 		tst_sleep 100ms
 	done
 
-	tst_resm TINFO "run client 'netstress -l $c_opts'"
-	netstress -l $c_opts > tst_netload.log 2>&1 || ret=1
+	log=/tmp/netstress.client
+	tst_resm TINFO "run client 'netstress -l $c_opts' ($log)"
+	strace -f -o $log netstress -l $c_opts > tst_netload.log 2>&1 || ret=1
 	tst_rhost_run -c "pkill -9 netstress\$"
 
 	if [ "$expect_ret" -ne "$ret" ]; then
