@@ -308,6 +308,47 @@ static inline int tst_atomic_add_return(int i, int *v)
 	return ret;
 }
 
+#elif defined(__sparc__)
+
+static volatile char lock = 0;
+
+static inline void acquire_lock(void) {
+	register char val;
+
+start:
+	asm volatile("ldstub %0, %1" : "+m"(lock), "=r" (val) : :);
+	if (val)
+		goto start;
+}
+
+static inline void release_lock(void) {
+	lock = 0;
+}
+
+static inline int tst_atomic_add_return(int i, int *v)
+{
+	register int x;
+	acquire_lock();
+	x = *v;
+	*v = x + i;
+	release_lock();
+	return x + i;
+}
+
+static inline int tst_atomic_load(int *v)
+{
+	register int x;
+	acquire_lock();
+	x = *v;
+	release_lock();
+	return x;
+}
+
+static inline void tst_atomic_store(int i, int *v)
+{
+	tst_atomic_add_return(i, v);
+}
+
 #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
 # error Your compiler does not provide __atomic_add_fetch, __sync_add_and_fetch \
         and an LTP implementation is missing for your architecture.
