@@ -1,45 +1,36 @@
 #!/bin/sh
+# Copyright (c) 2009 IBM Corporation
+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it would be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Mimi Zohar, zohar@ibm.vnet.ibm.com
+# Author: Petr Vorel <pvorel@suse.cz>
+#
+# Verify the boot and PCR aggregates.
 
-################################################################################
-##                                                                            ##
-## Copyright (C) 2009 IBM Corporation                                         ##
-##                                                                            ##
-## This program is free software;  you can redistribute it and#or modify      ##
-## it under the terms of the GNU General Public License as published by       ##
-## the Free Software Foundation; either version 2 of the License, or          ##
-## (at your option) any later version.                                        ##
-##                                                                            ##
-## This program is distributed in the hope that it will be useful, but        ##
-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-## for more details.                                                          ##
-##                                                                            ##
-## You should have received a copy of the GNU General Public License          ##
-## along with this program;  if not, write to the Free Software               ##
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-##                                                                            ##
-################################################################################
-#
-# File :        ima_tpm.sh
-#
-# Description:  This file verifies the boot and PCR aggregates
-#
-# Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
-#
-# Return        - zero on success
-#               - non zero on failure. return value from commands ($RC)
-################################################################################
-export TST_TOTAL=3
-export TCID="ima_tpm"
+TST_TESTFUNC="test"
+TST_CNT=3
+. ima_setup.sh
 
 init()
 {
 	tst_check_cmds ima_boot_aggregate ima_measure
 }
 
-# Function:     test01
 # Description   - Verify boot aggregate value is correct
-test01()
+test1()
 {
 	zero="0000000000000000000000000000000000000000"
 
@@ -90,10 +81,8 @@ validate_pcr()
 	return $RC
 }
 
-# Function:     test02
-# Description	- Verify ima calculated aggregate PCR values matches
-#		  actual PCR value.
-test02()
+# Verify ima calculated aggregate PCR values matches actual PCR value.
+test2()
 {
 
 	# Would be nice to know where the PCRs are located.  Is this safe?
@@ -110,9 +99,8 @@ test02()
 	fi
 }
 
-# Function:     test03
-# Description 	- Verify template hash value for IMA entry is correct.
-test03()
+# Verify template hash value for IMA entry is correct.
+test3()
 {
 
 	ima_measurements=$SECURITYFS/ima/binary_runtime_measurements
@@ -124,14 +112,6 @@ test03()
 	fi
 }
 
-. ima_setup.sh
-
 setup
-TST_CLEANUP=cleanup
-
 init
-test01
-test02
-test03
-
-tst_exit
+tst_run

@@ -1,86 +1,63 @@
 #!/bin/sh
-################################################################################
-##                                                                            ##
-## Copyright (C) 2009 IBM Corporation                                         ##
-##                                                                            ##
-## This program is free software;  you can redistribute it and#or modify      ##
-## it under the terms of the GNU General Public License as published by       ##
-## the Free Software Foundation; either version 2 of the License, or          ##
-## (at your option) any later version.                                        ##
-##                                                                            ##
-## This program is distributed in the hope that it will be useful, but        ##
-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-## for more details.                                                          ##
-##                                                                            ##
-## You should have received a copy of the GNU General Public License          ##
-## along with this program;  if not, write to the Free Software Foundation,   ##
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
-##                                                                            ##
-################################################################################
+# Copyright (c) 2009 IBM Corporation
+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
 #
-# File :        ima_setup.sh
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
 #
-# Description:  setup/cleanup routines for the integrity tests.
+# This program is distributed in the hope that it would be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
-################################################################################
-. test.sh
-mount_sysfs()
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Mimi Zohar, zohar@ibm.vnet.ibm.com
+# Author: Petr Vorel <pvorel@suse.cz>
+
+TST_SETUP="setup"
+TST_CLEANUP="cleanup"
+TST_NEEDS_TMPDIR=1
+TST_NEEDS_ROOT=1
+TST_NEEDS_CMDS="cut"
+. tst_test.sh
+
+UMOUNT=
+
+mount_helper()
 {
-	SYSFS=$(mount 2>/dev/null | awk '$5 == "sysfs" { print $3 }')
-	if [ "x$SYSFS" = x ] ; then
+	local type="$1"
+	local default_dir="$2"
+	local dir
 
-		SYSFS=/sys
+	grep ^$type /proc/mounts | cut -d ' ' -f2 && return
 
-		test -d $SYSFS || mkdir -p $SYSFS 2>/dev/null
-		if [ $? -ne 0 ] ; then
-			tst_brkm TBROK "Failed to mkdir $SYSFS"
-		fi
-		if ! mount -t sysfs sysfs $SYSFS 2>/dev/null ; then
-			tst_brkm TBROK "Failed to mount $SYSFS"
-		fi
-
+	if ! mkdir -p $default_dir; then
+		tst_brk TBROK "Failed to create $default_dir"
 	fi
-}
-
-mount_securityfs()
-{
-	SECURITYFS=$(mount 2>/dev/null | awk '$5 == "securityfs" { print $3 }')
-	if [ "x$SECURITYFS" = x ] ; then
-
-		SECURITYFS="$SYSFS/kernel/security"
-
-		test -d $SECURITYFS || mkdir -p $SECURITYFS 2>/dev/null
-		if [ $? -ne 0 ] ; then
-			tst_brkm TBROK "Failed to mkdir $SECURITYFS"
-		fi
-		if ! mount -t securityfs securityfs $SECURITYFS 2>/dev/null ; then
-			tst_brkm TBROK "Failed to mount $SECURITYFS"
-		fi
-
+	if ! mount -t $type $type $default_dir; then
+		tst_brk TBROK "Failed to mount $type"
 	fi
+	UMOUNT="$default_dir $UMOUNT"
+	echo $default_dir
 }
 
 setup()
 {
-	tst_require_root
+	SYSFS="$(mount_helper sysfs /sys)"
+	SECURITYFS="$(mount_helper securityfs $SYSFS/kernel/security)"
 
-	tst_tmpdir
-
-	mount_sysfs
-
-	# mount securityfs if it is not already mounted
-	mount_securityfs
-
-	# IMA must be configured in the kernel
-	IMA_DIR=$SECURITYFS/ima
-	if [ ! -d "$IMA_DIR" ]; then
-		tst_brkm TCONF "IMA not enabled in kernel"
-	fi
+	IMA_DIR="$SECURITYFS/ima"
+	[ -d "$IMA_DIR" ] || tst_brk TCONF "IMA not enabled in kernel"
 }
 
 cleanup()
 {
-	tst_rmdir
+	local dir
+	for dir in $UMOUNT; do
+		umount $UMOUNT
+	done
 }

@@ -1,139 +1,92 @@
 #!/bin/sh
+# Copyright (c) 2009 IBM Corporation
+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it would be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Mimi Zohar, zohar@ibm.vnet.ibm.com
+# Author: Petr Vorel <pvorel@suse.cz>
+#
+# Verify that measurements are added to the measurement list based on policy.
 
-################################################################################
-##                                                                            ##
-## Copyright (C) 2009 IBM Corporation                                         ##
-##                                                                            ##
-## This program is free software;  you can redistribute it and#or modify      ##
-## it under the terms of the GNU General Public License as published by       ##
-## the Free Software Foundation; either version 2 of the License, or          ##
-## (at your option) any later version.                                        ##
-##                                                                            ##
-## This program is distributed in the hope that it will be useful, but        ##
-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-## for more details.                                                          ##
-##                                                                            ##
-## You should have received a copy of the GNU General Public License          ##
-## along with this program;  if not, write to the Free Software Foundation,   ##
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
-##                                                                            ##
-################################################################################
-#
-# File :        ima_measurements.sh
-#
-# Description:  This file verifies measurements are added to the measurement
-# 		list based on policy.
-#
-# Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
-################################################################################
-export TST_TOTAL=3
-export TCID="ima_measurements"
+TST_TESTFUNC="test"
+TST_CNT=3
+. ima_setup.sh
+
+TEST_FILE="test.txt"
+HASH_COMMAND="sha1sum"
 
 init()
 {
-	tst_check_cmds sha1sum
-
-	# verify using default policy
-	if [ ! -f "$IMA_DIR/policy" ]; then
-		tst_resm TINFO "not using default policy"
-	fi
+	grep -q '^CONFIG_IMA_DEFAULT_HASH_SHA256=y' /boot/config-$(uname -r) && \
+		HASH_COMMAND="sha256sum"
+	tst_res TINFO "Detected IMA algoritm: ${HASH_COMMAND%sum}"
+	tst_check_cmds $HASH_COMMAND
+	[ -f "$IMA_DIR/policy" ] || tst_res TINFO "not using default policy"
 }
 
-# Function:     test01
-# Description   - Verify reading a file causes a new measurement to
-#		  be added to the IMA measurement list.
-test01()
+ima_check()
 {
-	# Create file test.txt
-	cat > test.txt <<-EOF
-	$(date) - this is a test file
-	EOF
-	if [ $? -ne 0 ]; then
-		tst_brkm TBROK "Unable to create test file"
-	fi
-
-	# Calculating the sha1sum of test.txt should add
-	# the measurement to the measurement list.
-	# (Assumes SHA1 IMA measurements.)
-	hash=$(sha1sum "test.txt" | sed 's/  -//')
-
-	# Check if the file is measured
-	# (i.e. contained in the ascii measurement list.)
-	cat /sys/kernel/security/ima/ascii_runtime_measurements > measurements
-	sleep 1
-	$(grep $hash measurements > /dev/null)
-	if [ $? -ne 0 ]; then
-		tst_resm TFAIL "TPM ascii measurement list does not contain sha1sum"
-	else
-		tst_resm TPASS "TPM ascii measurement list contains sha1sum"
-	fi
+	EXPECT_PASS grep -q $($HASH_COMMAND $TEST_FILE) /sys/kernel/security/ima/ascii_runtime_measurements
 }
 
-# Function:     test02
-# Description	- Verify modifying, then reading, a file causes a new
-# 		  measurement to be added to the IMA measurement list.
-test02()
+test1()
 {
-	# Modify test.txt
-	echo $(date) - file modified >> test.txt
-
-	# Calculating the sha1sum of test.txt should add
-	# the new measurement to the measurement list
-	hash=$(sha1sum test.txt | sed 's/  -//')
-
-	# Check if the new measurement exists
-	cat /sys/kernel/security/ima/ascii_runtime_measurements > measurements
-	$(grep $hash measurements > /dev/null)
-
-	if [ $? -ne 0 ]; then
-		tst_resm TFAIL "Modified file not measured"
-		tst_resm TINFO "iversion not supported; or not mounted with iversion"
-	else
-		tst_resm TPASS "Modified file measured"
-	fi
+	tst_res TINFO "verify adding record to the IMA measurement list"
+	ROD echo "$(date) this is a test file" > $TEST_FILE
+	ima_check
 }
 
-# Function:     test03
-# Description 	- Verify files are measured based on policy
-#		(Default policy does not measure user files.)
-test03()
+test2()
 {
-	# create file user-test.txt
-	mkdir -m 0700 user
-	chown nobody.nobody user
-	cd user
-	hash=0
+	local device
 
-	# As user nobody, create and cat the new file
-	# (The LTP tests assumes existence of 'nobody'.)
-	sudo -n -u nobody sh -c "echo $(date) - create test.txt > ./test.txt;
-				 cat ./test.txt > /dev/null"
+	tst_res TINFO "verify updating record in the IMA measurement list"
 
-	# Calculating the hash will add the measurement to the measurement
-	# list, so only calc the hash value after getting the measurement
-	# list.
-	cat /sys/kernel/security/ima/ascii_runtime_measurements > measurements
-	hash=$(sha1sum test.txt | sed 's/  -//')
-	cd - >/dev/null
-
-	# Check if the file is measured
-	grep $hash measurements > /dev/null
-	if [ $? -ne 0 ]; then
-		tst_resm TPASS "user file test.txt not measured"
+	device="$(df . | sed -e 1d | cut -f1 -d ' ')"
+	if grep $device /proc/mounts; then
+		grep -e ${device}.*iversion -e ${device}.*i_version /proc/mounts || \
+			tst_res TINFO "device '$device' is not mounted with iversion/i_version"
 	else
-		tst_resm TFAIL "user file test.txt measured"
+		tst_res TINFO "could not find mount info for device '$device'"
 	fi
+
+	ROD echo "$(date) modified file" > $TEST_FILE
+	ima_check
 }
 
-. ima_setup.sh
+test3()
+{
+	local dir="user"
+	local user="nobody"
+
+	tst_res TINFO "verify measuring user files"
+
+	id $user >/dev/null 2>/dev/null || tst_brk TCONF "missing system user $user (wrong installation)"
+	tst_check_cmds sudo
+
+	mkdir -m 0700 $dir
+	chown $user $dir
+	cd $dir
+
+	sudo -n -u $user sh -c "echo $(date) user file > $TEST_FILE;
+		cat $TEST_FILE > /dev/null"
+
+	ima_check
+	cd ..
+}
 
 setup
-TST_CLEANUP=cleanup
-
 init
-test01
-test02
-test03
-
-tst_exit
+tst_run

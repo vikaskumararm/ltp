@@ -1,37 +1,28 @@
 #!/bin/sh
-################################################################################
-##                                                                            ##
-## Copyright (C) 2009 IBM Corporation                                         ##
-##                                                                            ##
-## This program is free software;  you can redistribute it and#or modify      ##
-## it under the terms of the GNU General Public License as published by       ##
-## the Free Software Foundation; either version 2 of the License, or          ##
-## (at your option) any later version.                                        ##
-##                                                                            ##
-## This program is distributed in the hope that it will be useful, but        ##
-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-## for more details.                                                          ##
-##                                                                            ##
-## You should have received a copy of the GNU General Public License          ##
-## along with this program;  if not, write to the Free Software               ##
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-##                                                                            ##
-################################################################################
+# Copyright (c) 2009 IBM Corporation
+# Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
 #
-# File :        ima_violations.sh
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
 #
-# Description:  This file tests ToMToU and open_writer violations invalidate
-#		the PCR and are logged.
+# This program is distributed in the hope that it would be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# Return        - zero on success
-#               - non zero on failure. return value from commands ($RC)
-################################################################################
+# Author: Mimi Zohar, zohar@ibm.vnet.ibm.com
+# Author: Petr Vorel <pvorel@suse.cz>
+#
+# Test whether ToMToU and open_writer violations invalidatethe PCR and are logged.
 
-export TST_TOTAL=3
-export TCID="ima_violations"
+TST_TESTFUNC="test"
+TST_CNT=3
+. ima_setup.sh
 
 open_file_read()
 {
@@ -149,14 +140,6 @@ test03()
 	close_file_read
 }
 
-. ima_setup.sh
-
 setup
-TST_CLEANUP=cleanup
-
 init
-test01
-test02
-test03
-
-tst_exit
+tst_run
