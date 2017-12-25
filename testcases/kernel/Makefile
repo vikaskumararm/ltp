@@ -25,13 +25,24 @@ top_srcdir		?= ../..
 
 include $(top_srcdir)/include/mk/env_pre.mk
 
-# NOTE (garrcoop): mce-test isn't integrated into the build.
-
 # Build syscalls in all scenarios.
 SUBDIRS			:= syscalls
 
 # Build lib
 SUBDIRS			+= lib
+
+# submodule mce-test
+CURDIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+MAKE_TARGETS := mcelog
+
+$(CURDIR)mce-test/Makefile:
+	cd $(top_srcdir) && git submodule update --init --recursive
+
+mcelog: $(CURDIR)mce-test/Makefile
+	$(MAKE) -C $(CURDIR)mce-test prefix=$(prefix)
+	echo 0: PWD: $(PWD) # FIXME: debug
+	echo 1: cp $(CURDIR)mce-test/mcelog $(CURDIR) # FIXME: debug
+	cp $(CURDIR)mce-test/mcelog .
 
 ifneq ($(UCLINUX),1)
 # KEEP THIS LIST ALPHABETIZED PLEASE!
