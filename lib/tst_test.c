@@ -156,20 +156,25 @@ void tst_reinit(void)
 
 static void update_results(int ttype)
 {
+	fprintf(stderr, "%s:%d %s(): START ttype: %d\n", __FILE__, __LINE__, __func__, ttype); // FIXME: debug
 	if (!results)
 		return;
 
 	switch (ttype) {
 	case TCONF:
+		fprintf(stderr, "%s:%d %s(): TCONF\n", __FILE__, __LINE__, __func__); // FIXME: debug
 		tst_atomic_inc(&results->skipped);
 	break;
 	case TPASS:
+		fprintf(stderr, "%s:%d %s(): TPASS\n", __FILE__, __LINE__, __func__); // FIXME: debug
 		tst_atomic_inc(&results->passed);
 	break;
 	case TWARN:
+		fprintf(stderr, "%s:%d %s(): TWARN\n", __FILE__, __LINE__, __func__); // FIXME: debug
 		tst_atomic_inc(&results->warnings);
 	break;
 	case TFAIL:
+		fprintf(stderr, "%s:%d %s(): TFAIL\n", __FILE__, __LINE__, __func__); // FIXME: debug
 		tst_atomic_inc(&results->failed);
 	break;
 	}
@@ -374,6 +379,7 @@ void tst_reap_children(void)
 
 pid_t safe_fork(const char *filename, unsigned int lineno)
 {
+	fprintf(stderr, "%s:%d %s(): START\n", __FILE__, __LINE__, __func__); // FIXME: debug
 	pid_t pid;
 
 	if (!tst_test->forks_child)
