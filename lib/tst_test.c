@@ -580,7 +580,7 @@ int tst_parse_float(const char *str, float *val, float min, float max)
 static void do_exit(int ret)
 {
 	if (results) {
-		printf("\nSummary:\n");
+		printf("\nSummary C (%s):\n", __FILE__);
 		printf("passed   %d\n", results->passed);
 		printf("failed   %d\n", results->failed);
 		printf("skipped  %d\n", results->skipped);

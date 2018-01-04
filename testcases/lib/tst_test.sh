@@ -70,7 +70,7 @@ tst_do_exit()
 	fi
 
 	echo
-	echo "Summary:"
+	echo "Summary shell ($0):"
 	echo "passed   $TST_PASS"
 	echo "failed   $TST_FAIL"
 	echo "skipped  $TST_CONF"
