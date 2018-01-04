@@ -580,6 +580,7 @@ int tst_parse_float(const char *str, float *val, float min, float max)
 static void do_exit(int ret)
 {
 	if (results) {
+#ifndef LTP_NO_ATOMIC
 		printf("\nSummary C (%s):\n", __FILE__);
 		printf("passed   %d\n", results->passed);
 		printf("failed   %d\n", results->failed);
@@ -594,6 +595,9 @@ static void do_exit(int ret)
 
 		if (results->warnings)
 			ret |= TWARN;
+#else
+	printf("WARNING: Results not counted due missing atomic support.\n");
+#endif
 	}
 
 	do_cleanup();
