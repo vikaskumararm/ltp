@@ -61,7 +61,11 @@
 #ifndef TST_ATOMIC_H__
 #define TST_ATOMIC_H__
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "config.h"
+#include "tst_res_flags.h"
 
 #if HAVE_ATOMIC_MEMORY_MODEL == 1
 static inline int tst_atomic_add_return(int i, int *v)
@@ -309,8 +313,31 @@ static inline int tst_atomic_add_return(int i, int *v)
 }
 
 #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
-# error Your compiler does not provide __atomic_add_fetch, __sync_add_and_fetch \
-        and an LTP implementation is missing for your architecture.
+# define LTP_NO_ATOMIC "WARNING: Your compiler does not provide __atomic_add_fetch, " \
+	"__sync_add_and_fetch and an LTP implementation is missing for your architecture. " \
+	"Tests using atomic operations (e.g. using threads on new API or fuzzy synchronization) will not work.\n"
+
+# warning Your compiler does not provide __atomic_add_fetch \
+	__sync_add_and_fetch and an LTP implementation is missing for your architecture. \
+	Tests using atomic operations (e.g. using threads on new API or fuzzy synchronization) will not work.
+
+static inline int tst_atomic_add_return(int i LTP_ATTRIBUTE_UNUSED, int *v LTP_ATTRIBUTE_UNUSED)
+{
+	printf(LTP_NO_ATOMIC);
+	exit(TCONF);
+}
+
+static inline int tst_atomic_load(int *v LTP_ATTRIBUTE_UNUSED)
+{
+	printf(LTP_NO_ATOMIC);
+	exit(TCONF);
+}
+
+static inline void tst_atomic_store(int i LTP_ATTRIBUTE_UNUSED, int *v LTP_ATTRIBUTE_UNUSED)
+{
+	printf(LTP_NO_ATOMIC);
+	exit(TCONF);
+}
 #endif
 
 #ifdef LTP_USE_GENERIC_LOAD_STORE_ASM
