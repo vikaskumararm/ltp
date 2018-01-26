@@ -64,7 +64,7 @@ build_out_tree()
 	make autotools
 
 	cd $build
-	run_configure $tree/configure $CONFIGURE_OPTS_OUT_TREE CC="$CC"
+	run_configure $tree/configure $CONFIGURE_OPTS_OUT_TREE CC="$CC" $@
 
 	echo "=== build ==="
 	make $make_opts
