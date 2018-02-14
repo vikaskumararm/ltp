@@ -26,7 +26,7 @@ TST_CNT=3
 
 init()
 {
-	tst_check_cmds ima_boot_aggregate ima_measure
+	tst_check_cmds awk cut evmctl ima_measure tail
 }
 
 test1()
@@ -36,7 +36,7 @@ test1()
 	local zero="0000000000000000000000000000000000000000"
 	local tpm_bios="$SECURITYFS/tpm0/binary_bios_measurements"
 	local ima_measurements="$ASCII_MEASUREMENTS"
-	local boot_aggregate boot_hash ima_hash line
+	local boot_aggregate ima_hash line
 
 	# IMA boot aggregate
 	read line < $ima_measurements
@@ -51,9 +51,8 @@ test1()
 			tst_res TFAIL "bios boot aggregate is not 0"
 		fi
 	else
-		boot_aggregate=$(ima_boot_aggregate $tpm_bios)
-		boot_hash=$(expr substr $boot_aggregate 16 40)
-		if [ "${ima_hash}" = "${boot_hash}" ]; then
+		boot_aggregate="$(evmctl -v ima_measurement $tpm_bios 2>&1 | tail -1 | cut -d':' -f2)"
+		if [ "${ima_hash}" = "${boot_aggregate}" ]; then
 			tst_res TPASS "bios aggregate matches IMA boot aggregate"
 		else
 			tst_res TFAIL "bios aggregate does not match IMA boot aggregate"
