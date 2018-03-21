@@ -240,8 +240,19 @@ ssize_t safe_recvmsg(const char *file, const int lineno, size_t len,
 			 file, lineno, sockfd, msg, flags, rval, len);
 	}
 
-	return rval;
+	if (msg->msg_flags & MSG_TRUNC) {
+		tst_brkm(TBROK, NULL,
+			 "%s:%d: recvmsg(%d, %p, %d): buffer is too small",
+			 file, lineno, sockfd, msg, flags);
+	}
 
+	if (msg->msg_flags & MSG_CTRUNC) {
+		tst_brkm(TBROK, NULL,
+			 "%s:%d: recvmsg(%d, %p, %d): control buffer is too small",
+			 file, lineno, sockfd, msg, flags);
+	}
+
+	return rval;
 }
 
 int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
