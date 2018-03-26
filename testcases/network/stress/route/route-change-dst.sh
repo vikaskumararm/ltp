@@ -1,0 +1,33 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
+# Copyright (c) International Business Machines Corp., 2006
+# Author: Mitsuru Chinen <mitch@jp.ibm.com>
+
+# Change route destination
+# lhost: 10.0.0.2, rhost: 10.23.x.1
+
+TST_TESTFUNC="test_dst"
+. route-lib.sh
+
+setup()
+{
+	tst_res TINFO "change IPv$TST_IPVER route destination $NS_TIMES times"
+}
+
+test_dst()
+{
+	local iface="$(tst_iface)"
+	local rt="$(tst_ipaddr_un -m $1)"
+	local rhost="$(tst_ipaddr_un $1 1)"
+
+	tst_res TINFO "testing route '$rt'"
+
+	tst_add_ipaddr -s -a $rhost rhost
+	ROD ip route add $rt dev $iface
+	EXPECT_PASS ping$TST_IPV6 -c1 -I $(tst_ipaddr) $rhost
+	ROD ip route del $rt dev $iface
+	tst_del_ipaddr -s -a $rhost rhost
+}
+
+tst_run
