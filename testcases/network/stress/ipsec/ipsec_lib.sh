@@ -19,8 +19,6 @@
 #
 #######################################################################
 
-. test_net.sh
-
 # Authenticated encryption with associated data
 AEALGO="rfc4106_128"
 # Encryption algorithm
@@ -33,6 +31,7 @@ CALGO="deflate"
 IPSEC_REQUESTS="500"
 IPSEC_SIZE_ARRAY="${IPSEC_SIZE_ARRAY:-10 100 1000 2000 10000 65000}"
 
+lib_params=
 while getopts "hl:m:p:s:S:k:A:e:a:c:r:6" opt; do
 	case "$opt" in
 	h)
@@ -63,11 +62,14 @@ while getopts "hl:m:p:s:S:k:A:e:a:c:r:6" opt; do
 	a) AALGO=$OPTARG ;;
 	c) CALGO=$OPTARG ;;
 	r) IPSEC_REQUESTS="$OPTARG" ;;
-	6) # skip, test_net library already processed it
-	;;
+	6) lib_params="-6" ;;
 	*) tst_brkm TBROK "unknown option: $opt" ;;
 	esac
 done
+shift $(($OPTIND - 1))
+
+TST_USE_LEGACY_API=1
+. tst_net.sh $lib_params
 
 get_key()
 {

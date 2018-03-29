@@ -19,12 +19,8 @@
 #
 
 TST_NETLOAD_MAX_SRV_REPLIES=3
-TST_TOTAL=1
-TCID="tcp_fastopen"
-TST_NEEDS_TMPDIR=1
 
-. test_net.sh
-
+lib_params=
 while getopts :hr:n:R:6 opt; do
 	case "$opt" in
 	h)
@@ -35,11 +31,18 @@ while getopts :hr:n:R:6 opt; do
 		exit 0
 	;;
 	R) TST_NETLOAD_MAX_SRV_REPLIES=$OPTARG ;;
-	6) # skip, test_net library already processed it
-	;;
+	6) lib_params="-6" ;;
 	*) tst_brkm TBROK "unknown option: $opt" ;;
 	esac
 done
+shift $(($OPTIND - 1))
+
+TST_TOTAL=1
+TCID="tcp_fastopen"
+TST_NEEDS_TMPDIR=1
+
+TST_USE_LEGACY_API=1
+. tst_net.sh $lib_params
 
 cleanup()
 {
