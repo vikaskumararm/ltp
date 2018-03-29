@@ -18,16 +18,21 @@
 #
 # Author: Mitsuru Chinen <mitch@jp.ibm.com>
 
-TST_TOTAL=1
+TST_CNT=1
 TCID=if4-addr-change
+TST_SETUP="do_setup"
 TST_CLEANUP="do_cleanup"
-
-TST_USE_LEGACY_API=1
+TST_TESTFUNC="test_body"
 . tst_net.sh
 
 CHECK_INTERVAL=${CHECK_INTERVAL:-$(($NS_TIMES / 20))}
 # Maximum host portion of the IPv4 address on the local host
 LHOST_IPV4_HOST_MAX="254"
+
+do_setup()
+{
+	tst_check_cmds ifconfig
+}
 
 do_cleanup()
 {
@@ -35,7 +40,7 @@ do_cleanup()
 	tst_wait_ipv6_dad
 }
 
-trap "tst_brkm TBROK 'test interrupted'" INT
+trap "tst_brk TBROK 'test interrupted'" INT
 
 test_body()
 {
@@ -43,7 +48,7 @@ test_body()
 	local num=1
 	local add_to_net=
 
-	tst_resm TINFO "ifconfig changes IPv4 address $NS_TIMES times"
+	tst_res TINFO "ifconfig changes IPv4 address $NS_TIMES times"
 
 	while [ $cnt -lt $NS_TIMES ]; do
 		# Define the network portion
@@ -55,7 +60,7 @@ test_body()
 		# check prefix and fix values for prefix != 24
 		add_to_net=
 		if [ $IPV4_LPREFIX -lt 8 -o $IPV4_LPREFIX -ge 32 ] ; then
-			tst_brkm TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
+			tst_brk TCONF "test must be with prefix >= 8 and prefix < 32 ($IPV4_LPREFIX)"
 		elif [ $IPV4_LPREFIX -lt 16 ]; then # N.x.x.num
 			add_to_net=".0.1"
 		elif [ $IPV4_LPREFIX -lt 24 ]; then # N.N.x.num
@@ -71,14 +76,11 @@ test_body()
 		[ $CHECK_INTERVAL -eq 0 ] && continue
 		[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && continue
 
-		tst_resm TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
+		tst_res TINFO "ping $(tst_ipaddr):$(tst_ipaddr rhost) ${cnt}/$NS_TIMES"
 		tst_ping
 	done
 
 	tst_ping
 }
 
-tst_check_cmds ifconfig
-test_body
-
-tst_exit
+tst_run
