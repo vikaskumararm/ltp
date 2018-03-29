@@ -19,7 +19,8 @@
 #
 #######################################################################
 
-. test_net.sh
+TST_USE_LEGACY_API=1
+. tst_net.sh
 
 # Authenticated encryption with associated data
 AEALGO="rfc4106_128"
