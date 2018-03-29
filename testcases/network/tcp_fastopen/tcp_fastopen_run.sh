@@ -23,7 +23,8 @@ TST_TOTAL=1
 TCID="tcp_fastopen"
 TST_NEEDS_TMPDIR=1
 
-. test_net.sh
+TST_USE_LEGACY_API=1
+. tst_net.sh
 
 while getopts :hr:n:R:6 opt; do
 	case "$opt" in
