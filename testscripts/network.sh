@@ -88,7 +88,7 @@ fi
 TST_TOTAL=1
 TCID="network_settings"
 
-TST_USE_LEGACY_API=1
+TST_NO_DEFAULT_RUN=1
 . tst_net.sh
 
 # Reset variables.
