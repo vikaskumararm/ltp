@@ -56,28 +56,8 @@ MAKE_TARGETS		:= $(notdir $(patsubst %.c,%,$(SRCS)))
 MAKE_TARGETS_OBJS_WO_COMPAT_16	:= $(addsuffix .o,$(MAKE_TARGETS))
 MAKE_TARGETS		+= $(addsuffix _16,$(MAKE_TARGETS))
 
-# XXX (garrcoop): This code should be put in question as it cannot be applied
-# (no .h file, no TST_USE_NEWER64_SYSCALL def).
 DEF_16			:= TST_USE_COMPAT16_SYSCALL
-
-ifneq ($(COMPAT_TST_16_H),1)
-COMPAT_16_H		:= $(abs_srcdir)/../utils/compat_16.h
-else
-COMPAT_16_H     := $(abs_srcdir)/../utils/compat_tst_16.h
-endif
-
-ifneq ($(wildcard $(COMPAT_16_H)),)
-HAS_COMPAT_16		:= 1
-
-$(MAKE_TARGETS_OBJS_WO_COMPAT_16): $(COMPAT_16_H)
-.INTERMEDIATE: $(MAKE_TARGETS_OBJS_WO_COMPAT_16)
-
-else
-HAS_COMPAT_16		:= 0
-endif
-
 %_16: CPPFLAGS += -D$(DEF_16)=1
-# XXX (garrcoop): End section of code in question..
 
-%_16.o: %.c $(COMPAT_16_H)
+%_16.o: %.c
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
