@@ -19,7 +19,7 @@
 # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
 #
 
-TST_OPTS="6$TST_OPTS"
+TST_OPTS="${TST_OPTS}6"
 TST_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
 TST_PARSE_ARGS="tst_net_parse_args"
 TST_USAGE_CALLER="$TST_USAGE"
