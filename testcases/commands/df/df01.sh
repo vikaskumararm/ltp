@@ -20,7 +20,7 @@ TST_CNT=12
 TST_SETUP=setup
 TST_CLEANUP=cleanup
 TST_TESTFUNC=test
-TST_OPTS="f:"
+TST_OPTS="f:s:"
 TST_USAGE=usage
 TST_PARSE_ARGS=parse_args
 TST_NEEDS_ROOT=1
@@ -44,7 +44,10 @@ FS_TYPE=ext2
 
 parse_args()
 {
-	FS_TYPE="$2"
+	case $1 in
+	s) tst_res TINFO "parse_args: 1:'$1', 2:'$2' (@:'$@')";;
+	f) FS_TYPE="$2";;
+	esac
 }
 
 setup()
