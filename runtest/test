@@ -1,0 +1,11 @@
+TST_TEST_DATA test.TST_TEST_DATA.sh
+TST_TEST_DATA_separate test.TST_TEST_DATA.separate.sh
+TST_TEST_DATA_IFS test.TST_TEST_DATA_IFS.sh
+TST_TEST_TST_CNT_separate test.TST_TEST.TST_CNT.separate.sh
+TST_TEST_TST_CNT test.TST_TEST.TST_CNT.sh
+TST_TEST_getopts test.TST_TEST.getopts.sh
+TST_TEST test_TST_TEST.sh
+TST_TEST_DATA_TST_CNT_separate test.TST_TEST_DATA.TST_CNT.separate.sh
+TST_TEST_DATA_TST_CNT test.TST_TEST_DATA.TST_CNT.sh
+TST_TEST_DATA_getopts test.TST_TEST_DATA.getopts.sh
+TST_TEST_DATA_IFS_getopts test.TST_TEST_DATA_IFS.getopts.sh
