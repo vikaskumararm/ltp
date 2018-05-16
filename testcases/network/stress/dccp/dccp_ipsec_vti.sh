@@ -12,10 +12,7 @@ TST_CLEANUP=tst_ipsec_cleanup
 
 do_test()
 {
-	for p in $IPSEC_SIZE_ARRAY; do
-		tst_netload -H $ip_rmt_tun -T dccp -n $p -N $p \
-			-r $IPSEC_REQUESTS
-	done
+	tst_netload -H $ip_rmt_tun -T dccp -n $2 -N $2 -r $IPSEC_REQUESTS
 }
 
 tst_run

@@ -14,10 +14,7 @@ max_requests=10
 
 do_test()
 {
-	for p in $IPSEC_SIZE_ARRAY; do
-		tst_netload -H $ip_rmt_tun -n $p -N $p \
-			-r $IPSEC_REQUESTS -R $max_requests
-	done
+	tst_netload -H $ip_rmt_tun -n $2 -N $2 -r $IPSEC_REQUESTS -R $max_requests
 }
 
 tst_run

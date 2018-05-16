@@ -21,10 +21,7 @@ do_setup()
 
 do_test()
 {
-	for p in $IPSEC_SIZE_ARRAY; do
-		tst_netload -H $(tst_ipaddr rhost) -T dccp -n $p -N $p \
-			-r $IPSEC_REQUESTS
-	done
+	tst_netload -H $(tst_ipaddr rhost) -T dccp -n $2 -N $2 -r $IPSEC_REQUESTS
 }
 
 tst_run

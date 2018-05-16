@@ -48,7 +48,8 @@ ipsec_lib_parse_args()
 	r) IPSEC_REQUESTS="$2" ;;
 	esac
 
-	IPSEC_SIZE_ARRAY="$(echo $IPSEC_SIZE_ARRAY | sed 's/:/ /g')"
+	TST_TEST_DATA="$IPSEC_SIZE_ARRAY"
+	TST_TEST_DATA_IFS=":"
 }
 
 TST_OPTS="l:m:p:s:S:k:A:e:a:c:r:"

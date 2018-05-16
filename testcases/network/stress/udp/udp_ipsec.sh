@@ -22,12 +22,9 @@ do_setup()
 do_test()
 {
 	local type="udp"
-	[ $1 -gt 3 ] && type="udp_lite"
+	[ $2 -gt 3 ] && type="udp_lite"
 
-	for p in $IPSEC_SIZE_ARRAY; do
-		tst_netload -H $(tst_ipaddr rhost) -T $type -n $p -N $p \
-			-r $IPSEC_REQUESTS
-	done
+	tst_netload -H $(tst_ipaddr rhost) -T $type -n $2 -N $2 -r $IPSEC_REQUESTS
 }
 
 tst_run

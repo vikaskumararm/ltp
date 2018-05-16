@@ -13,12 +13,9 @@ TST_CLEANUP=tst_ipsec_setup_vti
 do_test()
 {
 	local type="udp"
-	[ $1 -gt 3 ] && type="udp_lite"
+	[ $2 -gt 3 ] && type="udp_lite"
 
-	for p in $IPSEC_SIZE_ARRAY; do
-		tst_netload -H $ip_rmt_tun -T $type -n $p -N $p \
-			-r $IPSEC_REQUESTS
-	done
+	tst_netload -H $ip_rmt_tun -T $type -n $2 -N $2 -r $IPSEC_REQUESTS
 }
 
 tst_run
