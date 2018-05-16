@@ -1,0 +1,3 @@
+TST_TEST_DATA test.TST_TEST_DATA.sh
+TST_TEST_DATA_separate test.TST_TEST_DATA.separate.sh
+TST_TEST_DATA_IFS test.TST_TEST_DATA_IFS.sh
