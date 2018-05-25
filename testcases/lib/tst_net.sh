@@ -20,11 +20,11 @@
 #
 
 TST_OPTS="6$TST_OPTS"
-TST_NET_PARSE_ARGS_CALLER="$TST_PARSE_ARGS"
+TST_NET_PARSE_ARGS_CALLER="$TST_PARSE_ARGS $TST_NET_PARSE_ARGS_CALLER"
 TST_PARSE_ARGS="tst_net_parse_args"
-TST_NET_USAGE_CALLER="$TST_USAGE"
+TST_NET_USAGE_CALLER="$TST_USAGE $TST_NET_USAGE_CALLER"
 TST_USAGE="tst_net_usage"
-TST_NET_SETUP_CALLER="$TST_SETUP"
+TST_NET_SETUP_CALLER="$TST_SETUP $TST_NET_SETUP_CALLER"
 TST_SETUP="tst_net_setup"
 
 # Blank for an IPV4 test; 6 for an IPV6 test.
@@ -34,7 +34,7 @@ tst_net_parse_args()
 {
 	case $1 in
 	6) TST_IPV6=6;;
-	*) $TST_NET_PARSE_ARGS_CALLER "$1" "$2";;
+	*) _tst_net_caller "$TST_NET_PARSE_ARGS_CALLER" "$1" "$2";;
 	esac
 }
 
@@ -46,14 +46,29 @@ tst_net_read_opts()
 	done
 }
 
+_tst_net_caller()
+{
+	local func="$1"
+	shift
+	local f
+
+	[ -z "$func" ] && return 1
+
+	for f in $func; do
+		$f "$@"
+	done
+	return 0
+}
+
 tst_net_usage()
 {
-	if [ -n "$TST_NET_USAGE_CALLER" ]; then
-		$TST_NET_USAGE_CALLER
-	else
+	_tst_net_caller "$TST_NET_USAGE_CALLER"
+
+	if [ $? -eq 1 ]; then
 		echo "Usage: $0 [-6]"
 		echo "OPTIONS"
 	fi
+
 	echo "-6      IPv6 tests"
 }
 
@@ -70,7 +85,8 @@ tst_net_setup()
 {
 	ipver=${TST_IPV6:-4}
 	tst_net_remote_tmpdir
-	[ -n "$TST_NET_SETUP_CALLER" ] && $TST_NET_SETUP_CALLER
+
+	_tst_net_caller "$TST_NET_SETUP_CALLER"
 }
 
 if [ -z "$TST_LIB_LOADED" ]; then
