@@ -24,6 +24,7 @@ TST_NEEDS_TMPDIR=1
 
 virt_type="macsec"
 VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-100}
+TST_NET_SKIP_PARSE_ARGS=1
 
 . ipsec_lib.sh
 . virt_lib.sh
