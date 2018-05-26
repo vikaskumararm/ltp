@@ -67,8 +67,10 @@ ipsec_lib_parse_args()
 	esac
 }
 
-TST_OPTS="${TST_OPTS:-hl:m:p:s:S:k:A:e:a:c:r:}"
-TST_PARSE_ARGS="${TST_PARSE_ARGS:-ipsec_lib_parse_args}"
+if [ -z "$TST_NET_SKIP_PARSE_ARGS" ]; then
+	TST_OPTS="${TST_OPTS:-hl:m:p:s:S:k:A:e:a:c:r:}"
+	TST_PARSE_ARGS="${TST_PARSE_ARGS:-ipsec_lib_parse_args}"
+fi
 
 TST_USE_LEGACY_API=1
 . tst_net.sh

@@ -35,7 +35,8 @@ tst_net_parse_args()
 {
 	case $1 in
 	6) TST_IPV6=6 ipver=6;;
-	*) $TST_PARSE_ARGS_CALLER "$1" "$2";;
+	*) [ -z "$TST_NET_SKIP_PARSE_ARGS" -o "$1" = "i" -o "$1" = "h" ] && \
+		$TST_PARSE_ARGS_CALLER "$1" "$2";;
 	esac
 }
 
