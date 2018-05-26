@@ -48,8 +48,8 @@ virt_lib_parse_args()
 	esac
 }
 
-TST_OPTS="hi:d:"
-TST_PARSE_ARGS=virt_lib_parse_args
+TST_OPTS="${TST_OPTS:-hi:d:}"
+TST_PARSE_ARGS="${TST_PARSE_ARGS:-virt_lib_parse_args}"
 
 TST_USE_LEGACY_API=1
 . tst_net.sh

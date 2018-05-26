@@ -37,8 +37,8 @@ nfs_parse_args()
 	esac
 }
 
-TST_OPTS="hv:t:"
-TST_PARSE_ARGS=nfs_parse_args
+TST_OPTS="${TST_OPTS:-hv:t:}"
+TST_PARSE_ARGS="${TST_PARSE_ARGS:-nfs_parse_args}"
 
 TST_USE_LEGACY_API=1
 . tst_net.sh

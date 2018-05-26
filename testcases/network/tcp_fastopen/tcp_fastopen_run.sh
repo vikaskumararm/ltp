@@ -39,8 +39,8 @@ TST_TOTAL=1
 TCID="tcp_fastopen"
 TST_NEEDS_TMPDIR=1
 
-TST_OPTS="hr:n:R:"
-TST_PARSE_ARGS=tcp_fastopen_parse_args
+TST_OPTS="${TST_OPTS:-hr:n:R:}"
+TST_PARSE_ARGS="${TST_PARSE_ARGS:-tcp_fastopen_parse_args}"
 
 TST_USE_LEGACY_API=1
 . tst_net.sh
