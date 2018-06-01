@@ -1,0 +1,91 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) 2018 Oracle and/or its affiliates. All Rights Reserved.
+
+TST_NEEDS_TMPDIR=1
+TST_NEEDS_ROOT=1
+TST_NEEDS_CMDS="sysctl tc"
+
+. tst_net.sh
+
+def_alg="cubic"
+prev_qlen=
+prev_queue=
+prev_alg=
+
+set_cong_alg()
+{
+	local alg=$1
+	tst_res TINFO "setting $alg"
+
+	tst_set_sysctl net.ipv4.tcp_congestion_control $alg safe
+}
+
+tcp_cc_cleanup()
+{
+	local rmt_dev="dev $(tst_iface rhost)"
+
+	[ "$prev_cong_ctl" ] && \
+		tst_set_sysctl net.ipv4.tcp_congestion_control $prev_alg
+
+	[ "$prev_qlen" ] && \
+		tst_rhost_run -c "ip li set txqueuelen $prev_qlen $rmt_dev"
+
+	[ "$prev_queue" ] && \
+		tst_rhost_run -c "tc qdisc replace $rmt_dev root $prev_queue"
+}
+
+tcp_cc_setup()
+{
+	prev_alg="$(sysctl -n net.ipv4.tcp_congestion_control)"
+}
+
+qdisc_list="pfifo_fast codel pfifo fq hfsc hhf htb pie prio sfb sfq"
+
+tcp_cc_set_qdisc()
+{
+	local qdisc="$1"
+	local qlen="${2:-1000}"
+	local cmd="tc qdisc replace"
+	local rmt_dev="$(tst_iface rhost)"
+
+	tst_res TINFO "set qdisc on $(tst_iface rhost) to $qdisc len $qlen"
+
+	[ -z "$prev_qlen" ] && \
+		prev_qlen=$(tst_rhost_run -s -c \
+			    "cat /sys/class/net/$rmt_dev/tx_queue_len")
+
+	[ -z "$prev_queue" ] && \
+		prev_queue=$(tst_rhost_run -s -c \
+			     "tc qdisc show dev $rmt_dev | head -1" | \
+			     cut -f2 -d' ')
+
+	tst_rhost_run -s -c "ip li set txqueuelen $qlen dev $rmt_dev"
+	tst_rhost_run -s -c "$cmd dev $rmt_dev root $qdisc"
+}
+
+tcp_cc_test01()
+{
+	local alg=$1
+	local threshold=${2:-10}
+
+	tst_res TINFO "compare '$def_alg' and '$alg' congestion alg. results"
+
+	set_cong_alg "$def_alg"
+
+	tst_netload -H $(tst_ipaddr rhost) -A 15000
+	local res0="$(cat tst_netload.res)"
+
+	set_cong_alg "$alg"
+
+	tst_netload -H $(tst_ipaddr rhost) -A 15000
+	local res1="$(cat tst_netload.res)"
+
+	local per=$(( $res0 * 100 / $res1 - 100 ))
+
+	if [ "$per" -lt "$threshold" ]; then
+		tst_res TFAIL "$alg performance $per %"
+	else
+		tst_res TPASS "$alg performance $per %"
+	fi
+}
