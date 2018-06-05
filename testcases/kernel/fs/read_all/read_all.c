@@ -61,6 +61,10 @@
 #define MAX_PATH 4096
 #define MAX_DISPLAY 40
 
+#if !defined(FNM_EXTMATCH)
+#define FNM_EXTMATCH 0
+#endif
+
 struct queue {
 	sem_t sem;
 	int front;
