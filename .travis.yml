@@ -101,6 +101,14 @@ before_install:
     - if [ -f /tmp/ubuntu-toolchain-r-test*.list ]; then
           sudo cp -v /tmp/ubuntu-toolchain-r-test*.list /etc/apt/sources.list.d/
       ; fi
+    - apt-key list
+    - apt-key adv --list-public-keys --with-fingerprint --with-colons
+
+    - gpg --keyserver pgpkeys.mit.edu --recv-key 1E9377A2BA9EF27F
+    - gpg -a --export 1E9377A2BA9EF27F | sudo apt-key add -
+    - apt-key list
+    - apt-key adv --list-public-keys --with-fingerprint --with-colons
+
     - sudo apt update --option Acquire::Retries=100 --option Acquire::http::Timeout="60"
 
     # installing / removing dependencies
