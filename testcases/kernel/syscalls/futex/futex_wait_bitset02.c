@@ -24,25 +24,10 @@
 
 #include <errno.h>
 
-#include "test.h"
+#include "tst_test.h"
+#include "tst_timer.h"
 #include "futextest.h"
+
+#define USE_CLOCK CLOCK_REALTIME
+
 #include "futex_wait_bitset.h"
-
-const char *TCID="futex_wait_bitset02";
-const int TST_TOTAL=1;
-
-#define DEFAULT_TIMEOUT_US 100010
-
-int main(int argc, char *argv[])
-{
-	int lc;
-
-	tst_timer_check(CLOCK_REALTIME);
-
-	tst_parse_opts(argc, argv, NULL, NULL);
-
-	for (lc = 0; TEST_LOOPING(lc); lc++)
-		verify_futex_wait_bitset(DEFAULT_TIMEOUT_US, CLOCK_REALTIME);
-
-	tst_exit();
-}
