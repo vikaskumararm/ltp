@@ -53,7 +53,6 @@
 #include "tst_process_state.h"
 #include "old_resource.h"
 #include "tst_res_flags.h"
-#include "tst_timer.h"
 #include "tst_kvercmp.h"
 #include "tst_fs.h"
 #include "tst_pid.h"
