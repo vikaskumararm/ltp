@@ -20,7 +20,7 @@ top_srcdir		?= ../../../..
 
 include $(top_srcdir)/include/mk/testcases.mk
 
-LDLIBS			+= -lipc
+mremap04: LDLIBS += -lipc
 
 LIBDIR			:= ../ipc/lib
 

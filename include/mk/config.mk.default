@@ -54,7 +54,7 @@ libdir			:= ${exec_prefix}/lib
 mandir			:= ${datarootdir}/man
 
 CPPFLAGS		:=
-CFLAGS			:= -g -O2
+CFLAGS			:= -g -O2 -fPIC
 LDLIBS			:=
 LDFLAGS			:=
 
@@ -62,7 +62,7 @@ DEBUG_CFLAGS		?= -g
 DEBUG_CXXFLAGS		?= $(DEBUG_CFLAGS)
 
 # Please see README.mk-devel about -fstrict-aliasing.
-OPT_CFLAGS		?= -O2 -fno-strict-aliasing -pipe
+OPT_CFLAGS		?= -O2 -fno-strict-aliasing -pipe -fPIC
 OPT_CXXFLAGS		?= $(OPT_CFLAGS)
 
 WCFLAGS			?= -Wall

@@ -61,11 +61,11 @@ CFLAGS			:= @CFLAGS@
 LDLIBS			:= @LIBS@
 LDFLAGS			:= @LDFLAGS@
 
-DEBUG_CFLAGS		?= -g
+DEBUG_CFLAGS		?= -g -fPIC
 DEBUG_CXXFLAGS		?= $(DEBUG_CFLAGS)
 
 # Please see README.mk-devel about -fstrict-aliasing.
-OPT_CFLAGS		?= -O2 -fno-strict-aliasing -pipe
+OPT_CFLAGS		?= -O2 -fno-strict-aliasing -pipe -fPIC
 OPT_CXXFLAGS		?= $(OPT_CFLAGS)
 
 WCFLAGS			?= -Wall -W @GCC_WARN_OLDSTYLE@

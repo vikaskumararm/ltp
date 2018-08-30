@@ -26,6 +26,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
 
 CPPFLAGS		+= -I$(abs_srcdir)/../include
 
-LIB			:= libsctp.a
+LIB			:= libsctp.so
 
 include $(top_srcdir)/include/mk/lib.mk

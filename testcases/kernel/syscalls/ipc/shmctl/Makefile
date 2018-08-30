@@ -18,9 +18,9 @@
 
 top_srcdir              ?= ../../../../..
 
-shmctl05: CFLAGS += -pthread
-shmctl05: LDLIBS += -lrt
-
 include $(top_srcdir)/include/mk/testcases.mk
+shmctl01: LDFLAGS += -lipc
+shmctl02: LDFLAGS += -lipc
+shmctl03: LDFLAGS += -lipc
 include $(abs_srcdir)/../Makefile.inc
 include $(top_srcdir)/include/mk/generic_leaf_target.mk

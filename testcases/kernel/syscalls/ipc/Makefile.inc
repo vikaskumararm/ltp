@@ -22,10 +22,9 @@
 
 # DO NOT USE THIS FILE FOR ipc / lib!!!
 
-LDLIBS			+= -lipc
 LIBDIR			:= ../lib
 
-LIBIPC			:= $(LIBDIR)/libipc.a
+LIBIPC			:= $(LIBDIR)/libipc.so
 
 $(LIBDIR):
 	mkdir -p "$@"

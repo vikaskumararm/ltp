@@ -3,7 +3,7 @@ top_srcdir		?= ../..
 include $(top_srcdir)/include/mk/env_pre.mk
 
 CFLAGS			+= -W -Wall
-LDLIBS			+= -lltp
+LDLIBS			+= -lltp -lrt
 
 test08: CFLAGS+=-pthread
 test09: CFLAGS+=-pthread

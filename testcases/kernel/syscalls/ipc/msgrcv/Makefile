@@ -19,5 +19,12 @@
 top_srcdir              ?= ../../../../..
 
 include $(top_srcdir)/include/mk/testcases.mk
+msgrcv01: LDFLAGS += -lipc
+msgrcv02: LDFLAGS += -lipc
+msgrcv03: LDFLAGS += -lipc
+msgrcv04: LDFLAGS += -lipc
+msgrcv05: LDFLAGS += -lipc
+msgrcv06: LDFLAGS += -lipc
+msgrcv07: LDFLAGS += -lipc
 include $(abs_srcdir)/../Makefile.inc
 include $(top_srcdir)/include/mk/generic_leaf_target.mk

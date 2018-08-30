@@ -7,7 +7,7 @@ CVS
 core
 .gdb_history
 .gdbinit
-lib*.a
+lib*.so
 .cache.mk
 *.dwo
 

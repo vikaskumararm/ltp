@@ -32,7 +32,7 @@ else
 FILTER_OUT_LIBSRCS	+= tlibio.c tst_path_has_mnt_flags.c tst_safe_sysv_ipc.c
 endif
 
-LIB			:= libltp.a
+LIB			:= libltp.so
 
 pc_file			:= $(DESTDIR)/$(datarootdir)/pkgconfig/ltp.pc
 

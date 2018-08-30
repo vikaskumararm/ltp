@@ -62,12 +62,18 @@ LIBSRCS		:= $(filter-out $(FILTER_OUT_LIBSRCS),$(LIBSRCS))
 
 LIBOBJS		:= $(LIBSRCS:.c=.o)
 
+CFLAGS = -fPIC -Wall -Wextra -O2 -g
+LDFLAGS = -shared -lpthread -lrt
+
+ifneq ($(LIB),libltp.so)
+LDFLAGS += -lltp
+endif
+
 $(LIB): $(notdir $(LIBOBJS))
 	if [ -z "$(strip $^)" ] ; then \
 		echo "Cowardly refusing to create empty archive"; \
 		exit 1; \
 	fi
-	$(if $(AR),$(AR),ar) -rc "$@" $^
-	$(if $(RANLIB),$(RANLIB),ranlib) "$@"
+	$(CC) ${LDFLAGS} -o "$@" $^
 
 include $(top_srcdir)/include/mk/generic_leaf_target.mk

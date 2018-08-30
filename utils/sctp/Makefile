@@ -26,8 +26,8 @@ include $(top_srcdir)/include/mk/env_pre.mk
 
 LIBSCTPDIR		:= lib
 LIBSCTPUTILDIR		:= testlib
-LIBSCTP			:= $(LIBSCTPDIR)/libsctp.a
-LIBSCTPUTIL		:= $(LIBSCTPUTILDIR)/libsctputil.a
+LIBSCTP			:= $(LIBSCTPDIR)/libsctp.so
+LIBSCTPUTIL		:= $(LIBSCTPUTILDIR)/libsctputil.so
 
 FILTER_OUT_DIRS		:= $(LIBSCTPDIR) $(LIBSCTPUTILDIR)
 
