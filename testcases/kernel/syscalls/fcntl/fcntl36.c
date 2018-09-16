@@ -57,6 +57,7 @@
 #include "lapi/fcntl.h"
 #include "tst_safe_pthread.h"
 #include "tst_test.h"
+#include "fcntl_common.h"
 
 static int thread_cnt;
 static int fail_flag = 0;
@@ -87,7 +88,12 @@ static void *fn_ofd_w(void *arg)
 	int fd = SAFE_OPEN(fname, O_RDWR);
 	long wt = pa->cnt;
 
-	struct flock64 lck = {
+    /* see explanation in fcntl_common.h */
+    #ifdef USE_STRUCT_FLOCK
+        struct flock lck = {
+    #else
+        struct flock64 lck = {
+    #endif
 		.l_whence = SEEK_SET,
 		.l_start  = pa->offset,
 		.l_len    = pa->length,
@@ -99,13 +105,13 @@ static void *fn_ofd_w(void *arg)
 		memset(buf, wt, pa->length);
 
 		lck.l_type = F_WRLCK;
-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
+        my_fcntl(fd, F_OFD_SETLKW, &lck);
 
 		SAFE_LSEEK(fd, pa->offset, SEEK_SET);
 		SAFE_WRITE(1, fd, buf, pa->length);
 
 		lck.l_type = F_UNLCK;
-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
+        my_fcntl(fd, F_OFD_SETLKW, &lck);
 
 		wt++;
 		if (wt >= 255)
@@ -166,7 +172,12 @@ static void *fn_ofd_r(void *arg)
 	int i;
 	int fd = SAFE_OPEN(fname, O_RDWR);
 
-	struct flock64 lck = {
+    /* see explanation in fcntl_common.h */
+    #ifdef USE_STRUCT_FLOCK
+        struct flock lck = {
+    #else
+        struct flock64 lck = {
+    #endif
 		.l_whence = SEEK_SET,
 		.l_start  = pa->offset,
 		.l_len    = pa->length,
@@ -178,7 +189,7 @@ static void *fn_ofd_r(void *arg)
 		memset(buf, 0, pa->length);
 
 		lck.l_type = F_RDLCK;
-		SAFE_FCNTL(fd, F_OFD_SETLKW, &lck);
+        my_fcntl(fd, F_OFD_SETLKW, &lck);
 
 		/* rlock acquired */
 		SAFE_LSEEK(fd, pa->offset, SEEK_SET);
@@ -209,7 +220,7 @@ static void *fn_ofd_r(void *arg)
 		}
 
 		lck.l_type = F_UNLCK;
-		SAFE_FCNTL(fd, F_OFD_SETLK, &lck);
+        my_fcntl(fd, F_OFD_SETLK, &lck);
 
 		sched_yield();
 	}
