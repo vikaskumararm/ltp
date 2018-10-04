@@ -38,11 +38,8 @@ static void check_iproute(unsigned int spe_ipver)
 	int n;
 	unsigned int ipver = 0;
 
-	ipf = popen("ip -V", "r");
-	if (ipf == NULL)
-		tst_brkm(TCONF, NULL,
-				"Failed while opening pipe for iproute check");
-
+	ipf = SAFE_POPEN(NULL, "ip -V", "r");
+	// TODO: ADD SAFE_SCANF to library
 	n = fscanf(ipf, "ip utility, iproute2-ss%u", &ipver);
 	if (n < 1) {
 		tst_brkm(TCONF, NULL,
