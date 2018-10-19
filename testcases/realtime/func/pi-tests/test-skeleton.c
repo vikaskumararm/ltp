@@ -42,6 +42,7 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <librttest.h>
+#include "tst_common.h"
 
 void usage(void)
 {
@@ -49,7 +50,7 @@ void usage(void)
 	printf("testpi-5 and 6 specific options:\n");
 }
 
-int parse_args(int c, char *v)
+int parse_args(int c, char *v LTP_ATTRIBUTE_UNUSED)
 {
 
 	int handled = 1;
@@ -69,7 +70,7 @@ int parse_args(int c, char *v)
 
 static pid_t pid;
 
-static void timeout_handler(int sig)
+static void timeout_handler(int sig LTP_ATTRIBUTE_UNUSED)
 {
 	int i, killed, status;
 	struct timespec ts = {.tv_sec = 0,.tv_nsec = 100000000 };

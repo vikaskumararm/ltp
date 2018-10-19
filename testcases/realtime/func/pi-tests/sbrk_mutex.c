@@ -44,6 +44,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include "librttest.h"
+#include "tst_common.h"
 
 #if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
 
@@ -60,7 +61,7 @@ void usage(void)
 	printf("sbrk_mutex specific options:\n");
 }
 
-int parse_args(int c, char *v)
+int parse_args(int c, char *v LTP_ATTRIBUTE_UNUSED)
 {
 
 	int handled = 1;
