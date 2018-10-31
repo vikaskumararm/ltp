@@ -98,7 +98,16 @@ static void setup(void)
 	SAFE_MKDIR(TESTDIR_FLAGGED, 0777);
 	SAFE_MKDIR(TESTDIR_UNFLAGGED, 0777);
 
-	TEST(tst_system("echo qwery | e4crypt add_key "TESTDIR_FLAGGED));
+	TEST(tst_system("echo qwery | strace -o /tmp/strace.log e4crypt add_key "TESTDIR_FLAGGED));
+
+	tst_res(TINFO, "WIFEXITED(%ld): %d", TST_RET, WIFEXITED(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WEXITSTATUS(%ld): %ld", TST_RET, WEXITSTATUS(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WIFSIGNALED(%ld): %d", TST_RET, WIFSIGNALED(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WIFSTOPPED(%ld): %d", TST_RET, WIFSTOPPED(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WIFCONTINUED(%ld): %d", TST_RET, WIFCONTINUED(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WTERMSIG(%ld): %ld", TST_RET, WTERMSIG(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WCOREDUMP(%ld): %ld", TST_RET, WCOREDUMP(TST_RET)); // FIXME: debug
+	tst_res(TINFO, "WSTOPSIG(%ld): %ld", TST_RET, WSTOPSIG(TST_RET)); // FIXME: debug
 
 	if (WEXITSTATUS(TST_RET) == 127)
 		tst_brk(TCONF, "e4crypt not installed!");

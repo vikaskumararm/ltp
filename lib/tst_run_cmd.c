@@ -162,10 +162,30 @@ int tst_system(const char *command)
 	 *system(3) function will not cause unexpected SIGCHLD signal
 	 *callback function for test cases.
 	 */
-	void *old_handler = signal(SIGCHLD, SIG_DFL);
+	//void *old_handler = signal(SIGCHLD, SIG_DFL);
 
 	ret = system(command);
+	fprintf(stderr, "%s:%d %s(): ret: %d\n", __FILE__, __LINE__, __func__, ret); // FIXME: debug
+	fprintf(stderr, "tst_system WIFEXITED(%d): %d\n", ret, WIFEXITED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WEXITSTATUS(%d): %d\n", ret, WEXITSTATUS(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WIFSIGNALED(%d): %d\n", ret, WIFSIGNALED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WIFSTOPPED(%d): %d\n", ret, WIFSTOPPED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WIFCONTINUED(%d): %d\n", ret, WIFCONTINUED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WTERMSIG(%d): %d\n", ret, WTERMSIG(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WCOREDUMP(%d): %d\n", ret, WCOREDUMP(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WSTOPSIG(%d): %d\n", ret, WSTOPSIG(ret)); // FIXME: debug
 
-	signal(SIGCHLD, old_handler);
+	fprintf(stderr, "========"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): ret: %d\n", __FILE__, __LINE__, __func__, ret); // FIXME: debug
+	fprintf(stderr, "tst_system WIFEXITED(%d): %d\n", ret, WIFEXITED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WEXITSTATUS(%d): %d\n", ret, WEXITSTATUS(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WIFSIGNALED(%d): %d\n", ret, WIFSIGNALED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WIFSTOPPED(%d): %d\n", ret, WIFSTOPPED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WIFCONTINUED(%d): %d\n", ret, WIFCONTINUED(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WTERMSIG(%d): %d\n", ret, WTERMSIG(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WCOREDUMP(%d): %d\n", ret, WCOREDUMP(ret)); // FIXME: debug
+	fprintf(stderr, "tst_system WSTOPSIG(%d): %d\n", ret, WSTOPSIG(ret)); // FIXME: debug
+
+	//signal(SIGCHLD, old_handler);
 	return ret;
 }
