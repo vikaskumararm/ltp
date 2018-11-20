@@ -140,7 +140,10 @@ tst_rhost_run()
 	local user="root"
 	local cmd=
 	local safe=0
+	local ttype=TWARN
 	local bg=
+
+	[ "$safe" -eq 1 ] && ttype=TWARN
 
 	OPTIND=0
 
@@ -161,9 +164,7 @@ tst_rhost_run()
 	OPTIND=0
 
 	if [ -z "$cmd" ]; then
-		[ "$safe" -eq 1 ] && \
-			tst_brk_ TBROK "tst_rhost_run: command not defined"
-		tst_res_ TWARN "tst_rhost_run: command not defined"
+		tst_brk_ $ttype "tst_rhost_run: command not defined"
 		return 1
 	fi
 
@@ -182,8 +183,10 @@ tst_rhost_run()
 	echo "$output" | grep -q 'RTERR$' && ret=1
 	if [ $ret -eq 1 ]; then
 		output=$(echo "$output" | sed 's/RTERR//')
-		[ "$safe" -eq 1 ] && \
+		if [ "$safe" -eq 1 ]; then
 			tst_brk_ TBROK "'$cmd' failed on '$RHOST': '$output'"
+			return 1
+		fi
 	fi
 
 	[ -z "$out" -a -n "$output" ] && echo "$output"
