@@ -69,6 +69,11 @@
                     + __GNUC_MINOR__ * 100     \
                     + __GNUC_PATCHLEVEL__)
 
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
+#pragma message("GCC_VERSION = " STRING(GCC_VERSION))
+#error "GCC_VERSION: #GCC_VERSION"
+
 #if GCC_VERSION >= 40300
 # define BUILD_BUG_ON_MSG(cond, msg) \
        compiletime_assert(!(cond), msg, tst_brk_detect_)
