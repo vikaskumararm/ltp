@@ -70,7 +70,11 @@ void tst_brk_(const char *file, const int lineno, int ttype,
               __attribute__ ((format (printf, 4, 5)));
 
 #define tst_brk(ttype, arg_fmt, ...) \
-	tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+       ({ \
+               BUILD_BUG_ON_MSG(!((ttype) & (TBROK | TCONF | TFAIL)), \
+                               "tst_brk(): invalid type, please use TBROK/TCONF/TFAIL"); \
+               tst_brk_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__);\
+       })
 
 /* flush stderr and stdout */
 void tst_flush(void);
