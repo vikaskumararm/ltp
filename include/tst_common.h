@@ -65,4 +65,23 @@
 	ERET;								\
 })
 
+#define GCC_VERSION (__GNUC__ * 10000          \
+                    + __GNUC_MINOR__ * 100     \
+                    + __GNUC_PATCHLEVEL__)
+
+#if GCC_VERSION >= 40300
+# define BUILD_BUG_ON_MSG(cond, msg) \
+       compiletime_assert(!(cond), msg, tst_brk_detect_)
+# define compiletime_assert(condition, msg, funcname_)         \
+       do {                                                    \
+               void funcname_(void) __attribute__((error(msg)));  \
+               if (!(condition))                               \
+                       funcname_();                            \
+       } while (0)
+#else
+# define BUILD_BUG_ON_MSG(cond, msg) BUILD_BUG_ON(cond)
+# define BUILD_BUG_ON(cond) \
+       do { ((void)sizeof(char[1 - 2 * !!(cond)])); } while (0)
+#endif
+
 #endif /* TST_COMMON_H__ */
