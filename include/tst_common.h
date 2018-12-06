@@ -65,4 +65,17 @@
 	ERET;								\
 })
 
+# define BUILD_BUG_ON(cond) \
+       do { ((void)sizeof(char[1 - 2 * !!(cond)])); } while (0)
+
+#define BUILD_BUG_ON_MSG(cond, msg) \
+	compiletime_assert(!(cond), msg, check_tst_brk_parameter_)
+
+#define compiletime_assert(condition, msg, funcname_)		\
+	do {							\
+		void funcname_(void) __attribute__((__error__(msg)));  \
+		if (!(condition))				\
+			funcname_();				\
+	} while (0)
+
 #endif /* TST_COMMON_H__ */

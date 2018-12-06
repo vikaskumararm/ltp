@@ -351,8 +351,10 @@ static void check_child_status(pid_t pid, int status)
 	case TPASS:
 	break;
 	case TBROK:
+		tst_brk(TBROK, "Reported by child (%i)", pid);
+	break;
 	case TCONF:
-		tst_brk(ret, "Reported by child (%i)", pid);
+		tst_brk(TCONF, "Reported by child (%i)", pid);
 	break;
 	default:
 		tst_brk(TBROK, "Invalid child (%i) exit value %i", pid, ret);
