@@ -27,11 +27,11 @@ matrix:
 
         - os: linux
           env: BUILD="native" TREE="out"
-          compiler: clang-4.0
+          compiler: clang-6.0
           addons:
               apt:
-                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-                  packages: ['clang-4.0']
+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+                  packages: ['clang-6.0']
 
         - os: linux
           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
