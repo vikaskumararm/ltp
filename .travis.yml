@@ -11,11 +11,11 @@ matrix:
         ### native builds ###
         - os: linux
           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
-          compiler: gcc-5
+          compiler: gcc-8
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test']
-                  packages: ['gcc-5']
+                  packages: ['gcc-8']
 
         - os: linux
           env: BUILD="native" TREE="out" INSTALL_PACKAGES="$BUILD"
@@ -27,11 +27,11 @@ matrix:
 
         - os: linux
           env: BUILD="native" TREE="out"
-          compiler: clang-4.0
+          compiler: clang-7
           addons:
               apt:
-                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-                  packages: ['clang-4.0']
+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+                  packages: ['clang-7']
 
         - os: linux
           env: BUILD="native" INSTALL_PACKAGES="$BUILD"
