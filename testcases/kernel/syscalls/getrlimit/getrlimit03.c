@@ -27,6 +27,8 @@
 #include "tst_test.h"
 #include "lapi/syscalls.h"
 
+#include <stdio.h> // FIXME: debug
+
 /**
  * Linux provides an "old" getrlimit syscall handler that uses signed long,
  * and a "new" getrlimit syscall handler that uses unsigned long.
@@ -51,6 +53,25 @@ struct rlimit64 {
 };
 #endif
 const uint64_t RLIM_INFINITY_U64 = UINT64_MAX;
+
+static void setup(void)
+{
+	fprintf(stderr, "%s:%d %s(): RLIM_INFINITY_L: %ld\n", __FILE__, __LINE__, __func__, LONG_MAX); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): __NR_prlimit64: %d\n", __FILE__, __LINE__, __func__, __NR_prlimit64); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): __NR_getrlimit: %d\n", __FILE__, __LINE__, __func__, __NR_getrlimit); // FIXME: debug
+#if SIGNED_GETRLIMIT
+fprintf(stderr, "%s:%d %s(): IS SIGNED_GETRLIMIT\n", __FILE__, __LINE__, __func__); // FIXME: debug
+#else
+fprintf(stderr, "%s:%d %s(): NOT SIGNED_GETRLIMIT\n", __FILE__, __LINE__, __func__); // FIXME: debug
+#endif
+
+#ifndef __x86_64__
+# undef __NR_getrlimit
+# define __NR_old_getrlimit  __NR_getrlimit
+# define __NR_getrlimit 190
+#endif
+	fprintf(stderr, "%s:%d %s(): after __NR_getrlimit: %d\n", __FILE__, __LINE__, __func__, __NR_getrlimit); // FIXME: debug
+}
 
 static int getrlimit_u64(int resource, struct rlimit64 *rlim)
 {
@@ -85,6 +106,12 @@ static int compare_retval(int resource, int ret_u64, int errno_u64,
 			  int ret_other, int errno_other,
 			  const char *other_syscall)
 {
+	/*
+	tst_res(TINFO, "pev: __NR_prlimit64(%d) returned %d (%s) but %s(%d) returned %d (%s)",
+		resource, ret_u64, tst_strerrno(errno_u64),
+		other_syscall, resource, ret_other,
+		tst_strerrno(errno_other));
+	*/
 	if (ret_u64 != ret_other || errno_u64 != errno_other) {
 		tst_res(TFAIL, "__NR_prlimit64(%d) returned %d (%s) but %s(%d) returned %d (%s)",
 			resource, ret_u64, tst_strerrno(errno_u64),
@@ -99,6 +126,9 @@ static int compare_retval(int resource, int ret_u64, int errno_u64,
 static int compare_u64_ulong(int resource, uint64_t val_u64,
 			     unsigned long val_ul, const char *kind)
 {
+	tst_res(TINFO, "pev: __NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
+		resource, kind, val_u64, resource, kind, val_ul); // FIXME: debug
+
 	if ((val_u64 > RLIM_INFINITY_UL && val_ul != RLIM_INFINITY_UL) ||
 	    (val_u64 <= RLIM_INFINITY_UL && val_ul != val_u64)) {
 		tst_res(TFAIL, "__NR_prlimit64(%d) had %s = %" PRIx64 " but " __NR_getrlimit_ulong_str "(%d) had %s = %lx",
@@ -114,6 +144,16 @@ static int compare_u64_ulong(int resource, uint64_t val_u64,
 static int compare_u64_long(int resource, uint64_t val_u64, long val_l,
 			    const char *kind)
 {
+	tst_res(TINFO, "pev: __NR_prlimit64(%d) had %s = %" PRIx64 ", __NR_getrlimit(%d) had %s = %lx",
+			resource, kind, val_u64, resource, kind, val_l); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): val_l: %ld\n", __FILE__, __LINE__, __func__, val_l); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): val_u64: %ld\n", __FILE__, __LINE__, __func__, val_u64); // FIXME: debug
+
+	if (val_u64 > (uint64_t)RLIM_INFINITY_L && val_l != RLIM_INFINITY_L)
+		fprintf(stderr, "%s:%d %s(): FIRST IS PROBLEMATIC\n", __FILE__, __LINE__, __func__); // FIXME: debug
+	if (val_u64 <= (uint64_t)RLIM_INFINITY_L && val_l != (long)val_u64)
+		fprintf(stderr, "%s:%d %s(): SECOND IS PROBLEMATIC\n", __FILE__, __LINE__, __func__); // FIXME: debug
+
 	if ((val_u64 > (uint64_t)RLIM_INFINITY_L && val_l != RLIM_INFINITY_L) ||
 	    (val_u64 <= (uint64_t)RLIM_INFINITY_L && val_l != (long)val_u64)) {
 		tst_res(TFAIL, "__NR_prlimit64(%d) had %s = %" PRIx64 " but __NR_getrlimit(%d) had %s = %lx",
@@ -150,6 +190,8 @@ static void run(unsigned int resource)
 	ret_ul = getrlimit_ulong(resource, &rlim_ul);
 	errno_ul = errno;
 
+	fprintf(stderr, "%s:%d %s(): ret_ul: %d\n", __FILE__, __LINE__, __func__, ret_ul); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): errno_ul: %d\n", __FILE__, __LINE__, __func__, errno_ul); // FIXME: debug
 	if (compare_retval(resource, ret_u64, errno_u64, ret_ul, errno_ul,
 			   __NR_getrlimit_ulong_str) ||
 	    compare_u64_ulong(resource, rlim_u64.rlim_cur, rlim_ul.rlim_cur,
@@ -159,9 +201,12 @@ static void run(unsigned int resource)
 		return;
 
 #if SIGNED_GETRLIMIT
+	fprintf(stderr, "%s:%d %s(): ONLY FOR SIGNED\n", __FILE__, __LINE__, __func__); // FIXME: debug
 	errno = 0;
 	ret_l = getrlimit_long(resource, &rlim_l);
 	errno_l = errno;
+	fprintf(stderr, "%s:%d %s(): ret_l: %d\n", __FILE__, __LINE__, __func__, ret_l); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): errno_l: %d\n", __FILE__, __LINE__, __func__, errno_l); // FIXME: debug
 
 	if (compare_retval(resource, ret_u64, errno_u64, ret_l, errno_l,
 			   "__NR_getrlimit") ||
@@ -179,4 +224,5 @@ static void run(unsigned int resource)
 static struct tst_test test = {
 	.tcnt = RLIM_NLIMITS,
 	.test = run,
+	.setup = setup,
 };
