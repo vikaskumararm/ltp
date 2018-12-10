@@ -74,7 +74,7 @@ sigsuspend 72
 sigpending 73
 sethostname 74
 setrlimit 75
-getrlimit 76
+getrlimit 190
 getrusage 77
 gettimeofday 78
 settimeofday 79
