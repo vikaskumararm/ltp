@@ -1,0 +1,5 @@
+FROM opensuse:tumbleweed
+
+RUN mkdir -p /usr/src/ltp
+WORKDIR /usr/src/ltp
+COPY . /usr/src/ltp
