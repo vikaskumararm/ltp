@@ -7,6 +7,7 @@
 #ifndef LAPI_STAT_H
 #define LAPI_STAT_H
 
+#include "config.h"
 #include <stdint.h>
 #include <unistd.h>
 #include "lapi/syscalls.h"
