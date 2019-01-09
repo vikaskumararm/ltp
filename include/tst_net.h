@@ -141,3 +141,16 @@ static inline void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
 	if (inet_pton(AF_INET6, ip_str, ip6) <= 0)
 		tst_brk_comment("bad IPv6 address: '%s'", ip_str);
 }
+
+static inline void setup_addrinfo(const char *src_addr, const char *port,
+			   const struct addrinfo *hints,
+			   struct addrinfo **addr_info)
+{
+	int err = getaddrinfo(src_addr, port, hints, addr_info);
+
+	if (err)
+		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
+
+	if (!*addr_info)
+		tst_brk(TBROK, "failed to get the address");
+}
