@@ -7,9 +7,13 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "tst_safe_stdio.h"
 
 #define MAX_IPV4_PREFIX 32
 #define MAX_IPV6_PREFIX 128
+
+#define MAX_IPV4_NET_ID 255
+#define MAX_IPV6_NET_ID 65535
 
 #define tst_res_comment(...) { \
 	fprintf(stderr, "# "); \
@@ -153,4 +157,45 @@ static inline void setup_addrinfo(const char *src_addr, const char *port,
 
 	if (!*addr_info)
 		tst_brk(TBROK, "failed to get the address");
+}
+
+/*
+ * NOTE: unlike shell implementation this support only:
+ * tst_ipaddr_un NET_ID HOST_ID
+ */
+static inline char *tst_ipaddr_un(int ai_family, unsigned int net, unsigned int host)
+{
+	char *env = "IPV4_NET16_UNUSED";
+	unsigned int max = MAX_IPV4_NET_ID;
+	char *addr, *unused;
+
+	if (ai_family != AF_INET && ai_family != AF_INET6)
+		tst_brk(TCONF, "ai_family must be AF_INET or AF_INET6 (%d)", ai_family);
+
+	if (ai_family == AF_INET6) {
+		env = "IPV6_NET32_UNUSED";
+		max = MAX_IPV6_NET_ID;
+	}
+
+	unused = getenv(env);
+	if (!unused)
+		tst_brk(TCONF, "%s not set (set it with tst_net.sh)", env);
+
+	net %= max;
+	host %= max;
+
+	if (ai_family == AF_INET6) {
+		if (host > 0 && net > 0)
+			SAFE_ASPRINTF(&addr, "%s:%x::%x", unused, net, host);
+		else if (host > 0 && net == 0)
+			SAFE_ASPRINTF(&addr, "%s::%x", unused, host);
+		else if (net > 0 && host == 0)
+			SAFE_ASPRINTF(&addr, "%s:%x::", unused, net);
+		else
+			SAFE_ASPRINTF(&addr, "%s::", unused);
+	} else {
+		SAFE_ASPRINTF(&addr, "%s.%d.%d", unused, net, host);
+	}
+
+	return strdup(addr);
 }
