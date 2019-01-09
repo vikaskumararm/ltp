@@ -212,6 +212,7 @@ static int sock_recv_poll(char *buf, int size, struct sock_info *i)
 	pfd.events = POLLIN;
 	int len = -1;
 
+	fprintf(stderr, "%s:%d %s(): \n", __FILE__, __LINE__, __func__); // FIXME: debug
 	while (1) {
 		errno = 0;
 		int ret = poll(&pfd, 1, i->timeout);
@@ -262,6 +263,7 @@ static int client_recv(char *buf, int srv_msg_len, struct sock_info *i)
 {
 	int len, offset = 0;
 
+	fprintf(stderr, "%s:%d %s(): \n", __FILE__, __LINE__, __func__); // FIXME: debug
 	while (1) {
 		errno = 0;
 		len = sock_recv_poll(buf + offset, srv_msg_len - offset, i);
@@ -565,6 +567,7 @@ void *server_fn(void *cfd)
 
 	init_socket_opts(inf.fd);
 
+	fprintf(stderr, "%s:%d %s(): \n", __FILE__, __LINE__, __func__); // FIXME: debug
 	while (1) {
 		recv_len = sock_recv_poll(recv_msg + offset,
 					  max_msg_len - offset, &inf);
@@ -650,6 +653,7 @@ static pthread_t server_thread_add(intptr_t client_fd)
 {
 	pthread_t id;
 	SAFE_PTHREAD_CREATE(&id, &attr, server_fn, (void *) client_fd);
+	fprintf(stderr, "%s:%d %s(): id: %d\n", __FILE__, __LINE__, __func__, id); // FIXME: debug
 	return id;
 }
 
@@ -719,13 +723,16 @@ static void server_run_udp(void)
 	if (server_bg)
 		move_to_background(log_path);
 
+	fprintf(stderr, "%s:%d %s(): HERE\n", __FILE__, __LINE__, __func__); // FIXME: debug
 	pthread_t p_id = server_thread_add(sfd);
+	fprintf(stderr, "%s:%d %s(): p_id: %d\n", __FILE__, __LINE__, __func__, p_id); // FIXME: debug
 
 	SAFE_PTHREAD_JOIN(p_id, NULL);
 }
 
 static void server_run(void)
 {
+	fprintf(stderr, "%s:%d %s(): \n", __FILE__, __LINE__, __func__); // FIXME: debug
 	if (server_bg)
 		move_to_background(log_path);
 

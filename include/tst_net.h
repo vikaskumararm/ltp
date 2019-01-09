@@ -144,8 +144,12 @@ static inline void get_in6_addr(const char *ip_str, struct in6_addr *ip6)
 
 static inline void move_to_background(char *log_path)
 {
-	if (SAFE_FORK())
+	fprintf(stderr, "%s:%d %s(): before SAFE_FORK(), getpid(): %d, getppid(): %d\n", __FILE__, __LINE__, __func__, getpid(), getppid()); // FIXME: debug
+	if (SAFE_FORK()) {
+		fprintf(stderr, "%s:%d %s(): IF SAFE_FORK(), getpid(): %d, getppid(): %d (EXIT THIS ONE)\n", __FILE__, __LINE__, __func__, getpid(), getppid()); // FIXME: debug
 		exit(0);
+	}
+	fprintf(stderr, "%s:%d %s(): AFTER SAFE_FORK(), getpid(): %d, getppid(): %d\n", __FILE__, __LINE__, __func__, getpid(), getppid()); // FIXME: debug
 
 	SAFE_SETSID();
 
