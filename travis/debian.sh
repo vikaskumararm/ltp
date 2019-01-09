@@ -28,12 +28,15 @@ apt install -y --no-install-recommends \
     libkeyutils-dev \
     libkeyutils1 \
     libmm-dev \
+    libnl-cli-3-dev \
+    libnl-cli-3-200 \
     libnuma-dev \
     libnuma1 \
     libselinux1-dev \
     libsepol1-dev \
     libssl-dev \
     linux-libc-dev \
-    lsb-release
+    lsb-release \
+    pkg-config
 
 apt install libtirpc1 libtirpc3 || true

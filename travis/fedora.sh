@@ -6,6 +6,7 @@ yum -y install \
 	autoconf \
 	automake \
 	make \
+	pkg-config \
 	clang \
 	gcc \
 	findutils \

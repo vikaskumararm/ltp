@@ -9,11 +9,14 @@ zypper --non-interactive install --no-recommends \
 	gcc \
 	gzip \
 	make \
+	pkg-config \
 	kernel-default-devel \
 	keyutils-devel \
 	libacl-devel \
 	libaio-devel \
 	libcap-devel \
+	libnl3-devel \
+	libnl3-200 \
 	libnuma-devel \
 	libopenssl-devel \
 	libselinux-devel \

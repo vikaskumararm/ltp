@@ -43,6 +43,9 @@ YACC			:= bison -y
 #SELINUX_LIBS		:= -lselinux
 #TIRPC_CPPFLAGS		:= -I/usr/include/tirpc
 #TIRPC_LIBS		:= -ltirpc
+#LIBNL_CLI3_CFLAGS		:= -I/usr/include/libnl3
+#LIBNL_CLI3_LIBS		:= -lnl-cli-3 -lnl-genl-3 -lnl-nf-3 -lnl-route-3 -lnl-3
+
 
 prefix			:= /opt/ltp
 

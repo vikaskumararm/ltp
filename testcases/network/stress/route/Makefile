@@ -22,8 +22,11 @@
 
 top_srcdir		?= ../../../..
 
-include $(top_srcdir)/include/mk/env_pre.mk
+include $(top_srcdir)/include/mk/testcases.mk
 
-INSTALL_TARGETS		:= route*
+INSTALL_TARGETS		+= route[4-6]-*
+
+route-change-dst: CFLAGS +=  $(LIBNL_CLI3_CFLAGS)
+route-change-dst: LDLIBS += $(LIBNL_CLI3_LIBS)
 
 include $(top_srcdir)/include/mk/generic_leaf_target.mk
