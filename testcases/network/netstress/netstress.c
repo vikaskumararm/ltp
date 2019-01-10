@@ -43,6 +43,7 @@
 #include "tst_safe_stdio.h"
 #include "tst_safe_pthread.h"
 #include "tst_test.h"
+#include "tst_net.h"
 
 static const int max_msg_len = (1 << 16) - 1;
 static const int min_msg_len = 5;
@@ -455,19 +456,6 @@ static int parse_client_request(const char *msg)
 static struct timespec tv_client_start;
 static struct timespec tv_client_end;
 
-static void setup_addrinfo(const char *src_addr, const char *port,
-			   const struct addrinfo *hints,
-			   struct addrinfo **addr_info)
-{
-	int err = getaddrinfo(src_addr, port, hints, addr_info);
-
-	if (err)
-		tst_brk(TBROK, "getaddrinfo failed, %s", gai_strerror(err));
-
-	if (!*addr_info)
-		tst_brk(TBROK, "failed to get the address");
-}
-
 static void client_init(void)
 {
 	if (clients_num >= MAX_THREADS) {
@@ -726,27 +714,10 @@ static void server_cleanup(void)
 	SAFE_CLOSE(sfd);
 }
 
-static void move_to_background(void)
-{
-	if (SAFE_FORK())
-		exit(0);
-
-	SAFE_SETSID();
-
-	close(STDIN_FILENO);
-	SAFE_OPEN("/dev/null", O_RDONLY);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
-
-	int fd = SAFE_OPEN(log_path, O_CREAT | O_TRUNC | O_RDONLY, 00444);
-
-	SAFE_DUP(fd);
-}
-
 static void server_run_udp(void)
 {
 	if (server_bg)
-		move_to_background();
+		move_to_background(log_path);
 
 	pthread_t p_id = server_thread_add(sfd);
 
@@ -756,7 +727,7 @@ static void server_run_udp(void)
 static void server_run(void)
 {
 	if (server_bg)
-		move_to_background();
+		move_to_background(log_path);
 
 	/* IPv4 source address will be mapped to IPv6 address */
 	struct sockaddr_in6 addr6;
