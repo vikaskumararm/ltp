@@ -54,6 +54,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "lapi/mmap.h"
 #include "tst_test.h"

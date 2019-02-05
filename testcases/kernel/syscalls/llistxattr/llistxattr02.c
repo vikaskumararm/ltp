@@ -33,6 +33,7 @@
 
 #include "config.h"
 #include <errno.h>
+#include <string.h>
 #include <sys/types.h>
 
 #ifdef HAVE_SYS_XATTR_H

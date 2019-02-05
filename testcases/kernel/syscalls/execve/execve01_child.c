@@ -16,8 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define TST_NO_DEFAULT_MAIN
 #include <stdlib.h>
+#include <string.h>
+
+#define TST_NO_DEFAULT_MAIN
 #include "tst_test.h"
 
 int main(int argc, char *argv[])

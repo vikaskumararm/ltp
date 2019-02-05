@@ -55,6 +55,7 @@
  *      ro  STA_CLK - clock source. unused.
  */
 
+#include <string.h>
 #include "clock_adjtime.h"
 
 static long hz;

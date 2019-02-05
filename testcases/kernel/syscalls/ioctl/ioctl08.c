@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <errno.h>
+#include <string.h>
 #include "tst_test.h"
 
 #ifdef HAVE_STRUCT_FILE_DEDUPE_RANGE
