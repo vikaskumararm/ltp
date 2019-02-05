@@ -14,6 +14,7 @@
 #include <netinet/ip.h>
 #include <netinet/ip6.h>
 #include <netdb.h>
+#include <string.h>
 #include <sys/syscall.h>
 
 #include "tst_test.h"

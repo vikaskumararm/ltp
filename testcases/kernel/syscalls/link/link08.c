@@ -32,6 +32,7 @@
  *      if too many symbolic links were encountered in resolving path.
  */
 #include <errno.h>
+#include <string.h>
 #include "tst_test.h"
 
 #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \

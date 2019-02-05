@@ -21,8 +21,10 @@
  *	dummy program which is used by execve02/4/5.c testcase
  */
 
-#define TST_NO_DEFAULT_MAIN
 #include <stdlib.h>
+#include <string.h>
+
+#define TST_NO_DEFAULT_MAIN
 #include "tst_test.h"
 
 int main(int argc, char *argv[])

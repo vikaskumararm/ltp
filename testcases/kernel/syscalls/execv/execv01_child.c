@@ -20,6 +20,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+
 #define TST_NO_DEFAULT_MAIN
 #include "tst_test.h"
 

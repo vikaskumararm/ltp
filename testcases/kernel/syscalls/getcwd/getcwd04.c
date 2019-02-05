@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 #include "tst_test.h"
 
 #define TIMEOUT	5

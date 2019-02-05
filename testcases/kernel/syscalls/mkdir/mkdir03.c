@@ -28,6 +28,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <sys/mount.h>
+#include <string.h>
 
 #include "tst_test.h"
 

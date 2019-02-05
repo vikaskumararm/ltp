@@ -39,6 +39,7 @@
  */
 #include <pwd.h>
 #include <errno.h>
+#include <string.h>
 #include "tst_test.h"
 
 #define MODE_RWX	(S_IRWXU|S_IRWXG|S_IRWXO)
