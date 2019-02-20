@@ -107,6 +107,8 @@ ima_cleanup()
 		cd $TST_TMPDIR
 		tst_umount $TST_DEVICE
 	fi
+
+	[ -n "$TST_CLEANUP_CALLER" ] && $TST_CLEANUP_CALLER
 }
 
 # loop device is needed to use only for tmpfs
