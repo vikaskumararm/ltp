@@ -54,7 +54,7 @@ libdir			:= ${exec_prefix}/lib
 mandir			:= ${datarootdir}/man
 
 CPPFLAGS		:=
-CFLAGS			:= -g -O2
+CFLAGS			:= -g -O2 -Wformat -Wformat-security -Werror=format-security
 LDLIBS			:=
 LDFLAGS			:=
 

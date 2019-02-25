@@ -57,7 +57,7 @@ libdir			:= @libdir@
 mandir			:= @mandir@
 
 CPPFLAGS		:= @CPPFLAGS@
-CFLAGS			:= @CFLAGS@
+CFLAGS			:= @CFLAGS@ -Wformat -Wformat-security -Werror=format-security
 LDLIBS			:= @LIBS@
 LDFLAGS			:= @LDFLAGS@
 
