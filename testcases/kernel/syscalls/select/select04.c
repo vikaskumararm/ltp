@@ -27,6 +27,8 @@
 
 #include "tst_timer_test.h"
 
+#include "select_mpx.h"
+
 static int fds[2];
 
 static int sample_fn(int clk_id, long long usec)
@@ -39,7 +41,7 @@ static int sample_fn(int clk_id, long long usec)
 	FD_SET(fds[0], &sfds);
 
 	tst_timer_start(clk_id);
-	TEST(select(1, &sfds, NULL, NULL, &timeout));
+	TEST(do_select(1, &sfds, NULL, NULL, &timeout));
 	tst_timer_stop();
 	tst_timer_sample();
 
@@ -69,5 +71,6 @@ static struct tst_test test = {
 	.scall = "select()",
 	.sample = sample_fn,
 	.setup = setup,
+	.test_multiplex = select_mpx,
 	.cleanup = cleanup,
 };
