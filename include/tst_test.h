@@ -146,6 +146,20 @@ struct tst_test {
 	 */
 	int all_filesystems:1;
 
+	/*
+	 * If set this function is used to mutiplex between different test
+	 * variants.
+	 *
+	 * Multiplexers are the way how to run the same test for different
+	 * settings. The intended use is to test different syscall
+	 * wrappers/variants but the API is generic and does not limit the
+	 * usage in any way.
+	 *
+	 * Each time the function is called it switches to next test variant,
+	 * returns zero if all variants has been iterated over.
+	 */
+	int (*test_multiplex)(void);
+
 	/* Minimal device size in megabytes */
 	unsigned int dev_min_size;
 

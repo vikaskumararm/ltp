@@ -1009,8 +1009,15 @@ static void testrun(void)
 		if (!cont)
 			break;
 
-		run_tests();
-		heartbeat();
+		if (tst_test->test_multiplex) {
+			while (tst_test->test_multiplex()) {
+				run_tests();
+				heartbeat();
+			}
+		} else {
+			run_tests();
+			heartbeat();
+		}
 	}
 
 	do_test_cleanup();
