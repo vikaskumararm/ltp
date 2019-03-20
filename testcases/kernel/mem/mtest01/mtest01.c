@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "lapi/abisize.h"
 #include "test.h"
 
 #define FIVE_HUNDRED_MB (unsigned long long)(500*1024*1024)
