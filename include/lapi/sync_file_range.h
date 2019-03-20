@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include "config.h"
 #include "lapi/syscalls.h"
+#include "lapi/wordsize.h"
 
 #if !defined(HAVE_SYNC_FILE_RANGE)
 

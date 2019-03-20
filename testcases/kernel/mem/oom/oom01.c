@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "lapi/wordsize.h"
 #include "mem.h"
 
 static void verify_oom(void)

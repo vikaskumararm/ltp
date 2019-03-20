@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <sys/param.h>
+#include "lapi/wordsize.h"
 #include "hugetlb.h"
 
 static struct tst_option options[] = {

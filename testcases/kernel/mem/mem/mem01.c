@@ -39,6 +39,7 @@
 #include <time.h>
 #include <limits.h>
 
+#include "lapi/wordsize.h"
 #include "test.h"
 
 /* in KB */

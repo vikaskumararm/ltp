@@ -39,6 +39,7 @@
 #include <sys/mount.h>
 #include <limits.h>
 #include <sys/param.h>
+#include "lapi/wordsize.h"
 #include "hugetlb.h"
 
 #define LOW_ADDR       0x80000000

@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "lapi/wordsize.h"
 #include "tst_test.h"
 
 #define FIVE_HUNDRED_MB         (500ULL*1024*1024)

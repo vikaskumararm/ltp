@@ -35,6 +35,7 @@
 #include <unistd.h>
 #include "test.h"
 #include "safe_macros.h"
+#include "lapi/wordsize.h"
 
 char *TCID = "fork14";
 int TST_TOTAL = 1;

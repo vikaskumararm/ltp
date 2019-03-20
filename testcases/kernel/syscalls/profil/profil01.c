@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include "test.h"
 #include "safe_macros.h"
+#include "lapi/wordsize.h"
 #include "config.h"
 
 char *TCID = "profil01";

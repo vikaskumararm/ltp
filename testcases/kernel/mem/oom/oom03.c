@@ -30,6 +30,7 @@
 #include <numa.h>
 #endif
 
+#include "lapi/wordsize.h"
 #include "numa_helper.h"
 #include "mem.h"
 

@@ -51,6 +51,7 @@
 #include "test.h"
 #include "safe_macros.h"
 #include "tst_kernel.h"
+#include "lapi/wordsize.h"
 
 char *TCID = "vma03";
 int TST_TOTAL = 1;
