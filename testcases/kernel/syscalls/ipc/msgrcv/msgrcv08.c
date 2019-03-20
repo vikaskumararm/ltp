@@ -35,6 +35,7 @@
  *      If this progarm is compiled as 64-bit application it works.
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -48,11 +49,6 @@ const char *TCID = "msgrcv08";
 const int TST_TOTAL = 1;
 
 #if __WORDSIZE == 32
-
-struct msgbuf {
-	long mtype;     /* message type, must be > 0 */
-	char mtext[16]; /* message data */
-};
 
 static void msr(int msqid)
 {
