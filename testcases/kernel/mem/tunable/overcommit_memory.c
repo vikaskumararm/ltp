@@ -69,6 +69,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include "lapi/wordsize.h"
 #include "mem.h"
 
 #define DEFAULT_OVER_RATIO	50L

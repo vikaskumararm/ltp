@@ -20,6 +20,8 @@
 #ifndef ABISIZE_H__
 #define ABISIZE_H__
 
+#include "lapi/wordsize.h"
+
 /*
  * Determines if we have to split up 64 bit arguments or not
  *

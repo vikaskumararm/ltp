@@ -1,4 +1,5 @@
 #include "lapi/syscalls.h"
+#include "lapi/wordsize.h"
 
 /*
  * glibc commit:

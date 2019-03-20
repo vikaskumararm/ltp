@@ -49,6 +49,7 @@
 #include <time.h>
 #include <errno.h>
 #include "defs.h"
+#include "lapi/wordsize.h"
 
 #define VER_STR "v1.4.2"
 #define BLKGETSIZE _IO(0x12,96)		/* IOCTL for getting the device size */

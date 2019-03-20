@@ -34,6 +34,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "lapi/wordsize.h"
 #include "mem.h"
 
 #define MAP_SIZE (1UL<<20)

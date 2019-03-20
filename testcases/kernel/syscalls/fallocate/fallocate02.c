@@ -41,6 +41,7 @@
 #include "test.h"
 #include "safe_macros.h"
 #include "lapi/fallocate.h"
+#include "lapi/wordsize.h"
 
 #define BLOCKS_WRITTEN		12
 #ifdef TEST_DEFAULT

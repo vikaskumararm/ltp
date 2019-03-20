@@ -44,6 +44,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "lapi/wordsize.h"
 #include "mem.h"
 
 /* allow swapping 1 * phy_mem in maximum */

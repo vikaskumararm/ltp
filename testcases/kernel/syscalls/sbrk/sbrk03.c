@@ -46,6 +46,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include "lapi/wordsize.h"
 #include "tst_test.h"
 
 static void sbrk_test(void)

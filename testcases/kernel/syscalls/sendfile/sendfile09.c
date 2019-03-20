@@ -51,6 +51,7 @@
 #include <inttypes.h>
 #include "test.h"
 #include "safe_macros.h"
+#include "lapi/wordsize.h"
 
 #ifndef OFF_T
 #define OFF_T off_t

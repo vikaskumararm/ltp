@@ -36,6 +36,7 @@
 
 #include <pwd.h>
 #include <limits.h>
+#include "lapi/wordsize.h"
 #include "hugetlb.h"
 
 #if __WORDSIZE == 64

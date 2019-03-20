@@ -30,6 +30,7 @@
 
 #include "tst_test.h"
 #include "lapi/syscalls.h"
+#include "lapi/wordsize.h"
 
 char fname[] = "/bin/cat";	/* test executable to open */
 int fd = -1;			/* initialized in open */

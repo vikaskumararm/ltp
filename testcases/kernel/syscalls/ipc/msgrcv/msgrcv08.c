@@ -42,6 +42,7 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include "test.h"
+#include "lapi/wordsize.h"
 
 const char *TCID = "msgrcv08";
 const int TST_TOTAL = 1;

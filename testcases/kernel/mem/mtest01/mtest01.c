@@ -43,6 +43,7 @@
 #include <unistd.h>
 
 #include "test.h"
+#include "lapi/wordsize.h"
 
 #define FIVE_HUNDRED_MB (unsigned long long)(500*1024*1024)
 #define ONE_GB	(unsigned long long)(1024*1024*1024)
