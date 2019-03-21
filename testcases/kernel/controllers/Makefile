@@ -29,10 +29,15 @@ LIBDIR			:= libcontrollers
 LIB			:= $(LIBDIR)/libcontrollers.a
 FILTER_OUT_DIRS		:= $(LIBDIR)
 
+ifneq ($(HAVE_FTS_H),1)
+	FILTER_OUT_DIRS += cpuset
+endif
+
 $(LIBDIR):
 	mkdir -p "$@"
 
 $(LIB): $(LIBDIR)
+
 	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
 
 MAKE_DEPS		:= $(LIB)
