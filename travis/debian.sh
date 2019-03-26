@@ -6,6 +6,14 @@ set -e
 # W: Failed to fetch http://deb.debian.org/debian/dists/oldstable-updates/main/binary-amd64/Packages
 grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
 
+# FIXME: debug
+echo "pev: in debian.sh" # FIXME: debug
+echo "run: grep -rl oldstable-updates /etc/apt/sources.list.d/ | xargs rm -fv" # FIXME: debug
+echo "find /etc/apt/sources.list.d/"
+find /etc/apt/sources.list.d/
+for i in /etc/apt/sources.list /etc/apt/sources.list.d/*; do if [ -f "$i" ]; then echo "== $i =="; cat $i; fi; done
+# FIXME: debug
+
 apt update
 
 apt install -y --no-install-recommends \
