@@ -85,9 +85,11 @@ ima_setup()
 
 	print_ima_config
 
+	echo "IN SETUP" # FIXME: debug
 	if [ "$TST_NEEDS_DEVICE" = 1 ]; then
 		tst_res TINFO "\$TMPDIR is on tmpfs => run on loop device"
 		mount_loop_device
+	else echo "ELSE" # FIXME: debug
 	fi
 
 	[ -n "$TST_SETUP_CALLER" ] && $TST_SETUP_CALLER

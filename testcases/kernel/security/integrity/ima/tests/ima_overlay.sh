@@ -29,8 +29,8 @@ setup()
 	params_backup="$TST_MNT_PARAMS"
 	TST_MNT_PARAMS="-o lowerdir=$lower,upperdir=$upper,workdir=$work"
 
-	grep -q -e ima_policy= -e ima_appraise_tcb /proc/cmdline || \
-		tst_brk TCONF "Test requires specify IMA policy as kernel parameter"
+	#grep -q -e ima_policy= -e ima_appraise_tcb /proc/cmdline || \
+		#tst_brk TCONF "Test requires specify IMA policy as kernel parameter"
 }
 
 do_test()
@@ -38,16 +38,32 @@ do_test()
 	local file="foo.txt"
 	local f
 
+	echo "BEFORE" # FIXME: debug
+	df -T $lower $upper $work $merged # FIXME: debug
+
 	tst_mount
 	mounted=1
 
+	echo "AFTER" # FIXME: debug
+	df -T $lower $upper $work $merged # FIXME: debug
+
+	echo "before $lower/$file" # FIXME: debug
+	getfattr -m . -d $lower/$file # FIXME: debug
 	ROD echo lower \> $lower/$file
+	echo "after $lower/$file" # FIXME: debug
+	getfattr -m . -d $lower/$file # FIXME: debug
+
+	echo "before $merged/$file" # FIXME: debug
+	getfattr -m . -d $merged/$file # FIXME: debug
 	if ! echo overlay > $merged/$file 2>/dev/null; then
 		tst_res TFAIL "Cannot write to merged layer"
+		echo "after $merged/$file" # FIXME: debug
 		return
 	fi
+	echo "after $merged/$file" # FIXME: debug
 
 	for f in $(find $TST_MNTPOINT -type f); do
+		getfattr -m . -d $f # FIXME: debug
 		EXPECT_PASS cat $f \> /dev/null 2\> /dev/null
 	done
 }

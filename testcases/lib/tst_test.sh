@@ -245,6 +245,13 @@ tst_mount()
 	fi
 
 	ROD_SILENT mkdir -p $TST_MNTPOINT
+
+	# FIXME: debug
+	echo mkdir -p $TST_MNTPOINT # FIXME: debug
+	echo "pwd: `pwd`" # FIXME: debug
+	echo "mount $mnt_opt $TST_DEVICE $TST_MNTPOINT $TST_MNT_PARAMS" # FIXME: debug
+	# FIXME: debug
+
 	mount $mnt_opt $TST_DEVICE $TST_MNTPOINT $TST_MNT_PARAMS
 	local ret=$?
 
