@@ -11,15 +11,12 @@ static void do_test(void)
 	case 0:
 		/* This is skipped after first iteration */
 		tst_brk(TCONF, "Test skipped");
-	break;
 	case 1:
 		/* This test is correctly looped with -i opt */
 		tst_res(TPASS, "Test passed");
-	break;
 	case 2:
 		/* This exits the test immediatelly */
 		tst_brk(TBROK, "Test broken");
-	break;
 	}
 
 	tst_res(TINFO, "test() function exitting normaly");

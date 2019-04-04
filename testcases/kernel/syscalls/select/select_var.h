@@ -53,7 +53,6 @@ static int do_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
 #else
 		tst_brk(TCONF, "__NR__newselect not implemented");
 #endif
-	break;
 	}
 
 	return -1;
