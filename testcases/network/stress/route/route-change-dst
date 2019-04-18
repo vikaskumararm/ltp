@@ -17,6 +17,12 @@ TST_NEEDS_TMPDIR=1
 
 . tst_net_stress.sh
 
+_ROD()
+{
+	echo "DEBUG: $@"
+	ROD $@
+}
+
 do_setup()
 {
 	# FIXME: remove duplicity
@@ -41,16 +47,16 @@ do_test()
 	tst_res TINFO "testing route '$new_rt'"
 	tst_rhost_run -c "ip addr add $addr/$mask dev $(tst_iface rhost)" # FIXME: new
 
-	ROD ip route add $new_rt dev $iface
-	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+	_ROD ip route add $new_rt dev $iface
+	_ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
 
 	# Load the route with one UDP datagram
 	#addr="10.23.99.1" # bad address on different subnet is correctly detected by ns-udpsender
 	addr="$(tst_ipaddr_un $1 99)" # FIXME: non existed address on the same subnet is not detected by ns-udpsender
 	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
 
-	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
-	ROD ip route del $new_rt dev $iface
+	_ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
+	_ROD ip route del $new_rt dev $iface
 	tst_rhost_run -c "ip addr del $addr/$mask dev $(tst_iface rhost)" # FIXME: new
 }
 
