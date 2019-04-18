@@ -7,47 +7,50 @@
 # Author: Mitsuru Chinen <mitch@jp.ibm.com>
 
 TST_TESTFUNC="do_test"
-TST_SETUP="netstress_setup"
+TST_SETUP="do_setup"
 TST_CLEANUP="restore_ipaddr"
 TST_NEEDS_CMDS="ip"
+TST_CNT=$NS_TIMES
+
+# TODO: really?
+TST_NEEDS_TMPDIR=1
 
 . tst_net_stress.sh
+
+do_setup()
+{
+	# FIXME: remove duplicity
+	mask=$IPV4_LPREFIX
+	udp_size=1472
+	if [ "$TST_IPV6" ]; then
+		mask=$IPV6_LPREFIX
+		udp_size=1452
+	fi
+	netstress_setup
+	tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
+}
 
 do_test()
 {
 	local iface=$(tst_iface)
-	local cnt=1
 	local addr new_gw
-
-	local udp_size=1472
-	local mask=24
-	if [ "$TST_IPV6" ]; then
-		udp_size=1452
-		mask=64
-	fi
 
 	local rt="$(tst_ipaddr_un 0)/$mask"
 
-	tst_res TINFO "change IPv$ipver route gateway $NS_TIMES times"
+	addr="$(tst_ipaddr_un $1 1)"
+	new_gw="$(tst_ipaddr_un $1 2)"
 
-	while [ $cnt -le $NS_TIMES ]; do
-		addr="$(tst_ipaddr_un $cnt 1)"
-		new_gw="$(tst_ipaddr_un $cnt 2)"
+	ROD ip addr add $addr/$mask dev $iface
+	ROD ip route add $rt dev $iface via $new_gw
+	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
 
-		ROD ip addr add $addr/$mask dev $iface
-		ROD ip route add $rt dev $iface via $new_gw
-		ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
+	# Load the route with one UDP datagram
+	#addr="10.23.88.1" # bad address on different subnet is correctly detected by ns-udpsender
+	addr="$(tst_ipaddr_un $1 88)" # FIXME: non existed address on the same subnet is not detected by ns-udpsender
+	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
 
-		# Load the route with one UDP datagram
-		ROD ns-udpsender -f $ipver -D $addr -p $cnt -o -s $udp_size
-
-		ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
-		ROD ip route del $rt dev $iface via $new_gw
-
-		cnt=$(($cnt + 1))
-	done
-
-	tst_res TPASS "test is finished correctly"
+	ROD ip neigh del $addr lladdr $(tst_hwaddr rhost) dev $iface
+	ROD ip route del $rt dev $iface via $new_gw
 }
 
 tst_run
