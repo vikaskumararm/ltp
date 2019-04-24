@@ -438,11 +438,24 @@ tst_init_iface()
 	tst_rhost_run -c "ip link set $iface up"
 }
 
-# tst_add_ipaddr [TYPE] [LINK]
-# TYPE: { lhost | rhost }; Default value is 'lhost'.
-# LINK: link number starting from 0. Default value is '0'.
+# tst_add_ipaddr [TYPE] [LINK] [ -a IP ]
+# TYPE: { lhost | rhost }, default value is 'lhost'.
+# LINK: link number starting from 0, default value is '0'.
+# IP: IP address to be added, default value is
+# $(tst_ipaddr)/$IPV{4,6}_{L,R}PREFIX.
 tst_add_ipaddr()
 {
+	local addr="$(tst_ipaddr)"
+
+	local OPTIND
+	while getopts a: opt; do
+		case "$opt" in
+		a) addr="$OPTARG" ;;
+		*) tst_brk TBROK "tst_add_ipaddr: unknown option: $OPTARG" ;;
+		esac
+	done
+	shift $((OPTIND - 1))
+
 	local type="${1:-lhost}"
 	local link_num="${2:-0}"
 	local mask dad
@@ -453,12 +466,13 @@ tst_add_ipaddr()
 	else
 		[ "$type" = "lhost" ] && mask=$IPV4_LPREFIX || mask=$IPV4_RPREFIX
 	fi
+	echo $addr | grep -q / || addr="$addr/$mask"
 
 	local iface=$(tst_iface $type $link_num)
 
 	if [ $type = "lhost" ]; then
-		tst_res_ TINFO "set local addr $(tst_ipaddr)/$mask"
-		ip addr add $(tst_ipaddr)/$mask dev $iface $dad
+		tst_res_ TINFO "set local addr $addr"
+		ip addr add $addr dev $iface $dad
 		return $?
 	fi
 
