@@ -16,10 +16,11 @@ do_setup()
 {
 	# FIXME: remove duplicity
 	mask=$IPV4_LPREFIX
-	udp_size=1472
+	dad=
 	if [ "$TST_IPV6" ]; then
 		mask=$IPV6_LPREFIX
 		udp_size=1452
+		dad="nodad"
 	fi
 	netstress_setup
 	tst_res TINFO "change IPv$TST_IPVER route gateway $NS_TIMES times"
@@ -36,8 +37,16 @@ do_test()
 
 	tst_res TINFO "testing gw '$new_gw'"
 
-	ROD ip addr add $new_gw/$mask dev $(tst_iface)
+	echo "ROD ip addr add $new_gw/$mask dev $(tst_iface)"
+	ROD ip addr add $new_gw/$mask dev $(tst_iface) $dad
+	ip addr |grep $new_gw/$mask
+	ping -c1 $new_gw
+
+	ip -$TST_IPVER addr; ip -$TST_IPVER route # FIXME: debug
+
+	echo "ROD ip route replace $rt dev $iface via $new_gw" # FIXME: debug
 	ROD ip route replace $rt dev $iface via $new_gw
+
 	ROD ip neigh replace $addr lladdr $(tst_hwaddr rhost) nud permanent dev $iface
 
 	EXPECT_PASS ns-udpsender -f $TST_IPVER -D $addr -p $1 -o -s $udp_size
