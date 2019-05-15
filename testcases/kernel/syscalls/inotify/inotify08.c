@@ -74,11 +74,11 @@ struct event_t {
 	unsigned int mask;
 };
 
-#define OVL_MNT "ovl"
 #define FILE_NAME "test_file"
 #define FILE_PATH OVL_MNT"/"FILE_NAME
 
 static int ovl_mounted;
+static const char mntpoint[] = OVL_BASE_MNTPOINT;
 
 static struct event_t event_set[EVENT_MAX];
 
@@ -104,8 +104,8 @@ void verify_inotify(void)
 	test_cnt++;
 
 	/* Make sure events on upper/lower do not show in overlay watch */
-	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
-	SAFE_TOUCH("upper/"FILE_NAME, 0644, NULL);
+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
 
 	int len = read(fd_notify, event_buf, EVENT_BUF_LEN);
 	if (len == -1 && errno != EAGAIN) {
@@ -157,13 +157,10 @@ static void setup(void)
 	int ret;
 
 	/* Setup an overlay mount with lower file */
-	SAFE_MKDIR("lower", 0755);
-	SAFE_TOUCH("lower/"FILE_NAME, 0644, NULL);
-	SAFE_MKDIR("upper", 0755);
-	SAFE_MKDIR("work", 0755);
-	SAFE_MKDIR(OVL_MNT, 0755);
-	ret = mount("overlay", OVL_MNT, "overlay", 0,
-		    "lowerdir=lower,upperdir=upper,workdir=work");
+	setup_overlay(0);
+	SAFE_TOUCH(OVL_LOWER"/"FILE_NAME, 0644, NULL);
+	ret = mount("overlay", OVL_MNT, "overlay", 0, "lowerdir="OVL_LOWER
+		    ",upperdir="OVL_UPPER",workdir="OVL_WORK);
 	if (ret < 0) {
 		if (errno == ENODEV) {
 			tst_brk(TCONF,
@@ -230,6 +227,8 @@ static void cleanup(void)
 static struct tst_test test = {
 	.needs_root = 1,
 	.needs_tmpdir = 1,
+	.mount_device = 1,
+	.mntpoint = mntpoint,
 	.setup = setup,
 	.cleanup = cleanup,
 	.test_all = verify_inotify,
