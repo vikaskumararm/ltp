@@ -11,7 +11,7 @@
 # include <sys/ustat.h>
 #else
 struct ustat {
-	daddr_t f_tfree;
+	long f_tfree;
 	ino_t f_tinode;
 	char f_fname[6];
 	char f_fpack[6];
