@@ -108,13 +108,24 @@ static int verify_acct_v3(struct acct_v3 *acc)
 
 static void run(void)
 {
-	int read_bytes, ret, entry_count;
+	int read_bytes, ret, entry_count, pid;
 
 	fd = SAFE_OPEN(OUTPUT_FILE, O_RDWR | O_CREAT, 0644);
 
-	TEST(acct(OUTPUT_FILE));
-	if (TST_RET == -1)
-		tst_brk(TBROK | TTERRNO, "Could not set acct output file");
+	/* On some systems the process calling acct has to end
+	 * before it takes effect
+	 */
+	pid = SAFE_FORK();
+
+	if (pid == 0) {
+		TEST(acct(OUTPUT_FILE));
+		if (TST_RET == -1) {
+			tst_brk(TBROK | TTERRNO,
+				"Could not set acct output file");
+		}
+		return;
+	}
+	tst_reap_children();
 
 	start_time = time(NULL);
 	run_command();
@@ -182,4 +193,5 @@ static struct tst_test test = {
 	.cleanup = cleanup,
 	.needs_tmpdir = 1,
 	.needs_root = 1,
+	.forks_child = 1,
 };
