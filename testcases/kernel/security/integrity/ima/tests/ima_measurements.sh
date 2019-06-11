@@ -57,7 +57,8 @@ setup()
 	[ -z "$DIGEST_INDEX" ] && tst_brk TCONF \
 		"Cannot find digest index (template: '$template')"
 
-	tst_res TINFO "IMA measurement tests assume tcb policy to be loaded (ima_policy=tcb)"
+	grep -q -e ima_policy=[a-z_]*tcb -e ima_tcb -e ima_appraise_tcb /proc/cmdline || \
+		tst_brk TCONF "IMA measurement tests require builtin IMA tcb policy (ima_policy=tcb or ima_policy=appraise_tcb kernel parameter)"
 }
 
 # TODO: find support for rmd128 rmd256 rmd320 wp256 wp384 tgr128 tgr160
