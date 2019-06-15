@@ -58,6 +58,7 @@ AC_CHECK_HEADERS([ \
     sys/shm.h \
     sys/ustat.h \
     sys/xattr.h \
+    emmintrin.h \
 ])
 
 AC_CHECK_FUNCS([ \

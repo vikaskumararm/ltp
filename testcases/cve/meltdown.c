@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <sys/utsname.h>
 
+#ifdef HAVE_EMMINTRIN_H
 #include <emmintrin.h>
 
 #include "libtsc.h"
@@ -387,3 +388,7 @@ static struct tst_test test = {
 	.cleanup = cleanup,
 	.min_kver = "2.6.32"
 };
+
+#else /* HAVE_EMMINTRIN_H */
+	TST_TEST_TCONF("<emmintrin.h> is not supported");
+#endif
