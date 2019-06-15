@@ -1676,6 +1676,32 @@ sturct tst_test test = {
 };
 -------------------------------------------------------------------------------
 
+2.2.30 Testing on specified architecture
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Testcases for specified arch should be limited on that only being supported
+platform to run, we now create a function tst_on_arch to achieve this new
+feature in LTP library.  All you need to run a test on the expected arch is
+to set the '.arch' string in the 'struct tst_test' to choose the required
+arch list. e.g. '.arch = "x86_64 i386"'.
+
+[source,c]
+-------------------------------------------------------------------------------
+#include "tst_test.h"
+
+static void setup(void)
+{
+	...
+}
+
+static struct tst_test test = {
+	...
+	.setup = setup,
+	.arch = "x86_64 i386",
+	...
+}
+-------------------------------------------------------------------------------
+
 
 2.3 Writing a testcase in shell
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

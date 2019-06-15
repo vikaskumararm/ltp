@@ -28,6 +28,7 @@
 #include "tst_atomic.h"
 #include "tst_kvercmp.h"
 #include "tst_clone.h"
+#include "tst_arch.h"
 #include "tst_kernel.h"
 #include "tst_minmax.h"
 #include "tst_get_bad_addr.h"
@@ -113,6 +114,8 @@ struct tst_test {
 	struct tst_option *options;
 
 	const char *min_kver;
+
+	const char *arch;
 
 	/* If set the test is compiled out */
 	const char *tconf_msg;
@@ -253,7 +256,6 @@ const char *tst_strstatus(int status);
 unsigned int tst_timeout_remaining(void);
 void tst_set_timeout(int timeout);
 
-
 /*
  * Returns path to the test temporary directory in a newly allocated buffer.
  */
@@ -265,6 +267,9 @@ static struct tst_test test;
 
 int main(int argc, char *argv[])
 {
+	if (!tst_on_arch(test.arch))
+		tst_brk(TCONF, "Test needs running on %s arch!", test.arch);
+
 	tst_run_tcases(argc, argv, &test);
 }
 
