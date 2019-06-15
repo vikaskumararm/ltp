@@ -20,8 +20,6 @@
 #include "config.h"
 #include "tst_test.h"
 
-#if defined(__x86_64__) || defined(__i386__)
-
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
@@ -382,15 +380,10 @@ static void cleanup(void)
 }
 
 static struct tst_test test = {
+	.arch = "x86_64 i386",
 	.needs_root = 1,
 	.setup = setup,
 	.test_all = run,
 	.cleanup = cleanup,
 	.min_kver = "2.6.32"
 };
-
-#else /* #if defined(__x86_64__) || defined(__i386__) */
-
-TST_TEST_TCONF("not x86_64 or i386");
-
-#endif /* #else #if defined(__x86_64__) || defined(__i386__) */

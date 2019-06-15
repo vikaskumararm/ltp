@@ -60,13 +60,13 @@
 # define NT_X86_XSTATE 0x202
 #endif
 
-#ifdef __x86_64__
 static void check_regs_loop(uint32_t initval)
 {
 	const unsigned long num_iters = 1000000000;
 	uint32_t xmm0[4] = { initval, initval, initval, initval };
 	int status = 1;
 
+#ifdef __x86_64__
 	asm volatile("   movdqu %0, %%xmm0\n"
 		     "   mov %0, %%rbx\n"
 		     "1: dec %2\n"
@@ -80,6 +80,7 @@ static void check_regs_loop(uint32_t initval)
 		     "3:\n"
 		     : "+m" (xmm0), "+r" (status)
 		     : "r" (num_iters) : "rax", "rbx", "xmm0");
+#endif
 
 	if (status) {
 		tst_res(TFAIL,
@@ -188,10 +189,7 @@ static void do_test(void)
 
 static struct tst_test test = {
 	.test_all = do_test,
+	.arch = "x86_64",
 	.forks_child = 1,
 	.needs_checkpoints = 1,
 };
-
-#else /* !__x86_64__ */
-	TST_TEST_TCONF("this test is only supported on x86_64");
-#endif /* __x86_64__ */
