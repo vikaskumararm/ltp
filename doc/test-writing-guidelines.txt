@@ -1881,6 +1881,8 @@ simply by setting right '$TST_NEEDS_FOO'.
                        the test (see below).
 | 'TST_NEEDS_MODULE' | Test module name needed for the test (see below).
 | 'TST_NEEDS_DRIVERS'| Checks kernel drivers support for the test.
+| 'LTP_TIMEOUT_MUL'  | Multiply timeout (> 1 is useful for slow machines to
+                       avoid unexpected timeout).
 |=============================================================================
 
 Checking for presence of commands
