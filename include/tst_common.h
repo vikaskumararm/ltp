@@ -1,21 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
+ * Copyright (c) Linux Test Project, 2017-2019
  * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
  * Copyright (c) 2013 Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
  * Copyright (c) 2010 Ngie Cooper <yaneurabeya@gmail.com>
  * Copyright (c) 2008 Mike Frysinger <vapier@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef TST_COMMON_H__
@@ -51,15 +40,22 @@
 
 #define TST_RETRY_FN_EXP_BACKOFF(FUNC, ERET, MAX_DELAY)	\
 ({	int tst_delay_ = 1;						\
+	float m = 1;	\
+	char *mul = getenv("LTP_TIMEOUT_MUL");	\
+	if (mul) {	\
+		m = atof(mul); \
+		if (m < 1) \
+			tst_brk(TBROK, "Invalid timeout multiplier '%s'", mul); \
+	}	\
 	for (;;) {							\
 		typeof(FUNC) tst_ret_ = FUNC;				\
 		if (tst_ret_ == ERET)					\
 			break;						\
-		if (tst_delay_ < MAX_DELAY * 1000000) {			\
+		if (tst_delay_ < MAX_DELAY * m * 1000000) {			\
 			usleep(tst_delay_);				\
 			tst_delay_ *= 2;				\
 		} else {						\
-			tst_brk(TBROK, #FUNC" timed out");		\
+			tst_brk(TBROK, #FUNC" timed out! If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1"); \
 		}							\
 	}								\
 	ERET;								\
