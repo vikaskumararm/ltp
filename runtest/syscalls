@@ -363,8 +363,6 @@ ftruncate04_64 ftruncate04_64
 #futimesat test cases
 futimesat01 futimesat01
 
-getcontext01 getcontext01
-
 getcpu01 getcpu01
 
 getcwd01 getcwd01
