@@ -8,6 +8,12 @@
 # include <linux/fs.h>
 #endif
 
+#ifdef HAVE_SYS_USER_H
+# include <sys/user.h>
+#endif
+
+#include "lapi/abisize.h"
+
 #ifndef LAPI_FS_H
 #define LAPI_FS_H
 
@@ -33,6 +39,13 @@
 
 #ifndef FS_NODUMP_FL
 #define FS_NODUMP_FL	   0x00000040 /* do not dump file */
+#endif
+
+/* Referred form linux kernel include/linux/fs.h */
+#ifdef TST_ABI64
+ #define MAX_LFS_FILESIZE   ((loff_t)LLONG_MAX)
+#else
+ #define MAX_LFS_FILESIZE   ((loff_t)ULONG_MAX << PAGE_SHIFT)
 #endif
 
 #endif
