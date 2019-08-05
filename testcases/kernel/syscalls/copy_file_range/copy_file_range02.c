@@ -78,7 +78,9 @@ static struct tcase {
 
 static int run_command(char *command, char *option, char *file)
 {
-	const char *const cmd[] = {command, option, file, NULL};
+	const char **cmd = (option) ? (const char*[]){command, option, file, NULL}
+		: (const char*[]){command, file, NULL};
+
 	int ret;
 
 	ret = tst_run_cmd(cmd, NULL, NULL, 1);
@@ -86,7 +88,7 @@ static int run_command(char *command, char *option, char *file)
 	case 0:
 	return 0;
 	case 255:
-		tst_res(TCONF, "%s binary not installed", command);
+		tst_res(TCONF, "%s binary not installed or failed", command);
 	return 1;
 	default:
 		tst_res(TCONF, "%s exited with %i", command, ret);
@@ -145,7 +147,7 @@ static void cleanup(void)
 		SAFE_CLOSE(fd_immutable);
 	}
 	if (fd_swapfile > 0) {
-		run_command("swapoff", FILE_SWAP_PATH, NULL);
+		run_command("swapoff", NULL, FILE_SWAP_PATH);
 		SAFE_CLOSE(fd_swapfile);
 	}
 	if (fd_dup > 0)
@@ -206,8 +208,8 @@ static void setup(void)
 		return;
 	}
 
-	swap_nsup = run_command("mkswap", FILE_SWAP_PATH, NULL);
-	swap_nsup = run_command("swapon", FILE_SWAP_PATH, NULL);
+	if (!(swap_nsup = run_command("mkswap", NULL, FILE_SWAP_PATH)))
+		swap_nsup = run_command("swapon", NULL, FILE_SWAP_PATH);
 }
 
 static struct tst_test test = {
