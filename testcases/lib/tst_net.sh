@@ -361,11 +361,13 @@ tst_ipaddr()
 
 # Get IP address of unused network, specified either by type and counter
 # or by net and host.
-# tst_ipaddr_un [-cCOUNTER] [-m] [TYPE]
-# tst_ipaddr_un [-m] NET_ID [HOST_ID]
+# tst_ipaddr_un [-c COUNTER] [-l MIN_HOST_ID] [-m] [TYPE]
+# tst_ipaddr_un [-l MIN_HOST_ID] [-m] NET_ID [HOST_ID]
 #
 # OPTIONS
 # -c COUNTER: integer value for counting HOST_ID and NET_ID (default: 1)
+# -l MIN_HOST_ID: min HOST_ID allowed minimal HOST_ID (useful for loop which
+# overflow max HOST_ID)
 # -m: print also mask
 # TYPE: { lhost | rhost } (default: 'lhost')
 # NET_ID: integer or hex value of net (IPv4: 3rd octet, IPv6: 3rd hextet)
@@ -373,29 +375,39 @@ tst_ipaddr()
 # hextet, default: 0)
 tst_ipaddr_un()
 {
-	local counter host_id mask max_host_id max_net_id net_id tmp type
+	local counter host_id mask max_host_id max_net_id min_host_id net_id tmp type
 	local OPTIND
 
-	while getopts "c:m" opt; do
+	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
+	max_host_id=$((max_net_id - 1))
+
+	while getopts "c:l:m" opt; do
 		case $opt in
 			c) counter="$OPTARG";;
+			l)
+				min_host_id="$OPTARG"
+				if ! tst_is_int "$min_host_id"; then
+					tst_brk TBROK "tst_ipaddr_un: -l must be integer ($min_host_id)"
+				fi
+				if [ $min_host_id -ge $max_host_id ]; then
+					tst_brk TBROK "tst_ipaddr_un: -l must be >= $max_host_id ($min_host_id)"
+				fi
+				;;
 			m) [ "$TST_IPV6" ] && mask="/64" || mask="/24";;
 		esac
 	done
 	shift $(($OPTIND - 1))
-
-	[ "$TST_IPV6" ] && max_net_id=65535 || max_net_id=255
 
 	# counter
 	if [ $# -eq 0 -o "$1" = "lhost" -o "$1" = "rhost" ]; then
 		[ -z "$counter" ] && counter=1
 		[ $counter -lt 1 ] && counter=1
 		type="${1:-lhost}"
-		max_host_id=$((max_net_id - 1))
 		tmp=$((counter * 2))
 		[ "$type" = "rhost" ] && tmp=$((tmp - 1))
 
 		host_id=$((tmp % max_host_id))
+
 		net_id=$((tmp / max_host_id))
 
 		if [ $host_id -eq 0 ]; then
@@ -414,7 +426,11 @@ tst_ipaddr_un()
 	fi
 
 	net_id=$((net_id % max_net_id))
-	host_id=$((host_id % max_net_id))
+	if [ "$min_host_id" ]; then
+		host_id=$(( host_id % (max_host_id - min_host_id + 1) + min_host_id ))
+	else
+		host_id=$((host_id % max_net_id))
+	fi
 
 	if [ -z "$TST_IPV6" ]; then
 		echo "${IPV4_NET16_UNUSED}.${net_id}.${host_id}${mask}"
