@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Referred from linux kernel -github/torvalds/linux/include/uapi/linux/fs.h
+ * Referred from linux kernel include/uapi/linux/fs.h
+ * Copyright (c) 2019 Petr Vorel <pvorel@suse.cz>
  * Copyright (c) Zilogic Systems Pvt. Ltd., 2018
  * Email: code@zilogic.com
  */
+
 #ifdef HAVE_LINUX_FS_H
 # include <linux/fs.h>
 #endif
@@ -37,11 +39,25 @@
 #define FS_NODUMP_FL	   0x00000040 /* do not dump file */
 #endif
 
-/* Referred form linux kernel include/linux/fs.h */
+#define TST_GET_MAX_32BIT \
+({ \
+        long page_size = getpagesize(); \
+        loff_t ret = ULONG_MAX; \
+ \
+        while (page_size >>= 1) \
+                ret <<= 1; \
+ \
+        ret; \
+})
+
+/*
+ * 64 bit macro taken from kernel include/linux/fs.h,
+ * 32 bit macro replaced due missing PAGE_SHIFT on some libc.
+ */
 #ifdef TST_ABI64
  #define MAX_LFS_FILESIZE   ((loff_t)LLONG_MAX)
 #else
- #define MAX_LFS_FILESIZE   ((loff_t)ULONG_MAX << PAGE_SHIFT)
+ #define MAX_LFS_FILESIZE   TST_GET_MAX_32BIT
 #endif
 
 #endif
