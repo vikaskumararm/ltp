@@ -50,6 +50,13 @@ int tst_clear_device(const char *dev);
  *
  */
 int tst_find_free_loopdev(const char *path, size_t path_len);
+
+
+int tst_attach_device(const char *dev_path, const char *file_path);
+
+
+int tst_detach_device(const char *dev_path);
+
 /*
  * Reads test block device stat file and returns the bytes written since the
  * last call of this function.
