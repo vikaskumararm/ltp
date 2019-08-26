@@ -748,7 +748,7 @@ IPV6_LHOST="${IPV6_LHOST:-fd00:1:1:1::2/64}"
 IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
 
 # tst_net_ip_prefix
-# Strip prefix from IP address and save both If no prefix found sets
+# Strip prefix from IP address and save both. If no prefix found sets
 # default prefix.
 #
 # tst_net_iface_prefix reads prefix and interface from rtnetlink.
@@ -761,27 +761,49 @@ IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
 # tst_net_ip_prefix -h
 # tst_net_iface_prefix -h
 # tst_net_vars -h
+
+_tst_net_eval_vars()
+{
+	local args cmd rhost
+
+	local OPTIND
+	while getopts prv opt; do
+		case "$opt" in
+		p) cmd="tst_net_ip_prefix" ;;
+		r) rhost="1" ;;
+		v) cmd="tst_net_vars" ;;
+		*) tst_brk_ TBROK "_tst_net_eval_vars: unknown option: $OPTARG" ;;
+		esac
+	done
+	shift $((OPTIND - 1))
+	[ -z "$cmd" ] && tst_brk_ TBROK "_tst_net_eval_vars: need to set -p or -v"
+	args="$1"
+
+	if [ -n "$rhost" ]; then
+		eval $(tst_rhost_run -c "$cmd $args" || \
+			echo "tst_res_ TCONF \"_tst_net_eval_vars: tst_rhost_run -c '$cmd $args' returned $?\"; exit 1")
+	else
+		eval $($cmd $args || echo "tst_res_ TCONF \"_tst_net_eval_vars: $cmd $args returned $?\"; exit 1")
+	fi
+}
+
 if [ -z "$TST_PARSE_VARIABLES" ]; then
-	eval $(tst_net_ip_prefix $IPV4_LHOST || echo "exit $?")
-	eval $(tst_net_ip_prefix -r $IPV4_RHOST || echo "exit $?")
-	eval $(tst_net_ip_prefix $IPV6_LHOST || echo "exit $?")
-	eval $(tst_net_ip_prefix -r $IPV6_RHOST || echo "exit $?")
+	_tst_net_eval_vars -p $IPV4_LHOST
+	_tst_net_eval_vars -p -- "-r $IPV4_RHOST"
+	_tst_net_eval_vars -p $IPV6_LHOST
+	_tst_net_eval_vars -p -- "-r $IPV6_RHOST"
 fi
 
 [ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
 
 if [ -z "$TST_PARSE_VARIABLES" ]; then
-	eval $(tst_net_iface_prefix $IPV4_LHOST || echo "exit $?")
-	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV4_RHOST \
-		|| echo "exit $?")
-	eval $(tst_net_iface_prefix $IPV6_LHOST || echo "exit $?")
-	eval $(tst_rhost_run -c 'tst_net_iface_prefix -r '$IPV6_RHOST \
-		|| echo "exit $?")
+	_tst_net_eval_vars -p $IPV4_LHOST
+	_tst_net_eval_vars -p -r -- "-r $IPV4_RHOST"
+	_tst_net_eval_vars -p $IPV6_LHOST
+	_tst_net_eval_vars -p -r -- "-r $IPV6_RHOST"
 
-	eval $(tst_net_vars $IPV4_LHOST/$IPV4_LPREFIX \
-		$IPV4_RHOST/$IPV4_RPREFIX || echo "exit $?")
-	eval $(tst_net_vars $IPV6_LHOST/$IPV6_LPREFIX \
-		$IPV6_RHOST/$IPV6_RPREFIX || echo "exit $?")
+	_tst_net_eval_vars -v "$IPV4_LHOST/$IPV4_LPREFIX $IPV4_RHOST/$IPV4_RPREFIX"
+	_tst_net_eval_vars -v "$IPV6_LHOST/$IPV6_LPREFIX $IPV6_RHOST/$IPV6_RPREFIX"
 
 	tst_res_ TINFO "Network config (local -- remote):"
 	tst_res_ TINFO "$LHOST_IFACES -- $RHOST_IFACES"
