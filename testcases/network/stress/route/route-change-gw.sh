@@ -29,6 +29,7 @@ test_gw()
 	tst_res TINFO "testing route over gateway '$gw'"
 
 	tst_add_ipaddr -s -a $gw rhost
+	echo "ROD ip route replace $rt dev $iface via $gw" # FIXME: debug
 	ROD ip route replace $rt dev $iface via $gw
 	EXPECT_PASS ping$TST_IPV6 -c1 -I $lhost $rhost
 	ROD ip route del $rt dev $iface via $gw
