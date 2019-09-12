@@ -379,9 +379,31 @@ _tst_rescmp()
 
 _tst_setup_timer()
 {
+	TST_TIMEOUT=${TST_TIMEOUT:-300}
 	LTP_TIMEOUT_MUL=${LTP_TIMEOUT_MUL:-1}
 
-	local sec=$((300 * LTP_TIMEOUT_MUL))
+	if [ "$LTP_TIMEOUT_MUL" = -1 ]; then
+		tst_res TINFO "Timeout per run is disabled"
+		return
+	fi
+
+	local err
+	tst_is_num || err=1
+	if tst_is_int; then
+		[ "$LTP_TIMEOUT_MUL" -ge 1 ] || err=1
+	else
+		tst_test_cmds awk
+		echo | awk '{if ('"$LTP_TIMEOUT_MUL"' < 1) {exit 1;}}' || err=1
+	fi
+	if [ "$err" ]; then
+		tst_brk TCONF "LTP_TIMEOUT_MUL must be number >= 1! ($LTP_TIMEOUT_MUL)"
+	fi
+
+	if ! tst_is_int || [ "$LTP_TIMEOUT" -lt 1 ]; then
+		tst_brk TCONF "LTP_TIMEOUT must be int >= 1! ($LTP_TIMEOUT)"
+	fi
+
+	local sec=$((TST_TIMEOUT * LTP_TIMEOUT_MUL))
 	local h=$((sec / 3600))
 	local m=$((sec / 60 % 60))
 	local s=$((sec % 60))
