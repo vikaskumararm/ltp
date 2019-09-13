@@ -29,6 +29,7 @@
 #include "tst_kconfig.h"
 #include "tst_test.h"
 #include "lapi/acct.h"
+#include <stdio.h> // FIXME: debug
 
 #define COMMAND		"acct02_helper"
 #define OUTPUT_FILE	"acct_file"
@@ -74,6 +75,19 @@ static int verify_acct(struct acct *acc)
 	int user_time = UNPACK(acc->ac_utime);
 	int elap_time = UNPACK(acc->ac_etime);
 
+	fprintf(stderr, "%s:%d %s(): sys_time: %d, user_time: %d, elap_time: %d\n",
+			__FILE__, __LINE__, __func__, sys_time, user_time, elap_time); // FIXME: debug
+
+	fprintf(stderr, "%s:%d %s(): strcmp(acc->ac_comm, COMMAND): '%s', '%s': %s\n", __FILE__, __LINE__, __func__, acc->ac_comm, COMMAND, strcmp(acc->ac_comm, COMMAND) ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_btime < start_time, (%d < %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_btime,  start_time, acc->ac_btime < start_time ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_btime - start_time > 1 (%d < %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_btime, start_time, acc->ac_btime - start_time > 1 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_uid != getuid() (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_uid, getuid(), acc->ac_uid != getuid() ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_gid != getgid() (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_gid, getgid(), acc->ac_gid != getgid() ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): user_time/clock_ticks > 1 (%d): %s\n", __FILE__, __LINE__, __func__, user_time/clock_ticks, user_time/clock_ticks > 1 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): sys_time/clock_ticks (%d): %s\n", __FILE__, __LINE__, __func__, sys_time/clock_ticks, sys_time/clock_ticks > 1? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): elap_time/clock_ticks >= 2 (%d) %s\n", __FILE__, __LINE__, __func__, elap_time/clock_ticks, elap_time/clock_ticks >= 2 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_exitcode != rc (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_exitcode, rc, acc->ac_exitcode != rc ? "yes" : "no"); // FIXME: debug
+
 	if (strcmp(acc->ac_comm, COMMAND) ||
 		acc->ac_btime < start_time ||
 		acc->ac_btime - start_time > 1 ||
@@ -93,12 +107,33 @@ static int verify_acct_v3(struct acct_v3 *acc)
 	int user_time = UNPACK(acc->ac_utime);
 	int elap_time = acc->ac_etime;
 
+	fprintf(stderr, "%s:%d %s(): sys_time: %d, user_time: %d, elap_time: %d\n",
+			__FILE__, __LINE__, __func__, sys_time, user_time, elap_time); // FIXME: debug
+
+	fprintf(stderr, "%s:%d %s(): strcmp(acc->ac_comm, COMMAND): '%s', '%s': %s\n", __FILE__, __LINE__, __func__, acc->ac_comm, COMMAND, strcmp(acc->ac_comm, COMMAND) ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_btime < start_time, (%d < %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_btime,  start_time, acc->ac_btime < start_time ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_btime - start_time > 1 (%d < %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_btime, start_time, acc->ac_btime - start_time > 1 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_uid != getuid() (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_uid, getuid(), acc->ac_uid != getuid() ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_gid != getgid() (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_gid, getgid(), acc->ac_gid != getgid() ? "yes" : "no"); // FIXME: debug
+
+	//  acc->ac_ppid != (uint32_t)getpid() ||
+	fprintf(stderr, "%s:%d %s(): acc->ac_ppid != (uint32_t)getpid() (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_ppid, (uint32_t)getpid(), acc->ac_ppid != (uint32_t)getpid() ? "yes" : "no"); // FIXME: debug
+
+	fprintf(stderr, "%s:%d %s(): user_time/clock_ticks > 1 (%d): %s\n", __FILE__, __LINE__, __func__, user_time/clock_ticks, user_time/clock_ticks > 1 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): sys_time/clock_ticks (%d): %s\n", __FILE__, __LINE__, __func__, sys_time/clock_ticks, sys_time/clock_ticks > 1? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): elap_time/clock_ticks >= 2 (%d) %s\n", __FILE__, __LINE__, __func__, elap_time/clock_ticks, elap_time/clock_ticks >= 2 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_exitcode != rc (%d != %d): %s\n", __FILE__, __LINE__, __func__, acc->ac_exitcode, rc, acc->ac_exitcode != rc ? "yes" : "no"); // FIXME: debug
+
+	// new
+	fprintf(stderr, "%s:%d %s(): acc->ac_version != 3 (%d) %s\n", __FILE__, __LINE__, __func__, acc->ac_version, acc->ac_version != 3 ? "yes" : "no"); // FIXME: debug
+	fprintf(stderr, "%s:%d %s(): acc->ac_pid < 1 (%d) %s\n", __FILE__, __LINE__, __func__, acc->ac_pid, acc->ac_pid < 1 ? "yes" : "no"); // FIXME: debug
+
 	if (strcmp(acc->ac_comm, COMMAND) ||
 		acc->ac_btime < start_time ||
 		acc->ac_btime - start_time > 1 ||
 		acc->ac_uid != getuid() ||
 		acc->ac_gid != getgid() ||
-		acc->ac_ppid != (uint32_t)getpid() ||
+		acc->ac_ppid != (uint32_t)getpid() || // new
 		user_time/clock_ticks > 1 ||
 		sys_time/clock_ticks  > 1 ||
 		elap_time/clock_ticks >= 2 ||
@@ -124,6 +159,7 @@ static void run(void)
 	acct(NULL);
 
 	entry_count = 0;
+	int i = 0; // FIXME: debug
 	do {
 		read_bytes = SAFE_READ(0, fd, &acct_struct, acct_size);
 
@@ -132,8 +168,12 @@ static void run(void)
 		else
 			ret = verify_acct(&acct_struct.v0);
 
+		fprintf(stderr, "%s:%d %s(): %d: entry_count %d: ret: %d, read_bytes: %d, acct_size: %d\n",
+			__FILE__, __LINE__, __func__, i, entry_count, ret, read_bytes, acct_size); // FIXME: debug
+
 		if (read_bytes)
 			entry_count++;
+		i++; // FIXME: debug
 	} while (read_bytes == acct_size && !ret);
 
 	tst_res(TINFO, "Number of accounting file entries tested: %d",

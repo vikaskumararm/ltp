@@ -8,9 +8,12 @@
  */
 
 #include <unistd.h>
+#include <stdio.h> // FIXME: debug
 
 int main(void)
 {
+	fprintf(stderr, "%s:%d %s(): before sleep\n", __FILE__, __LINE__, __func__); // FIXME: debug
 	sleep(1);
+	fprintf(stderr, "%s:%d %s(): after sleep\n", __FILE__, __LINE__, __func__); // FIXME: debug
 	return 128;
 }
