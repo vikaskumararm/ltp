@@ -85,7 +85,7 @@ void tst_taint_init(unsigned int mask)
 
 	taint = tst_taint_read();
 	if ((taint & mask) != 0)
-		tst_brk(TBROK, "Kernel is already tainted: %u", taint);
+		tst_brk(TCONF, "Kernel is already tainted: %u", taint);
 }
 
 
