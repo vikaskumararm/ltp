@@ -46,5 +46,6 @@ cve-2017-17052:	CFLAGS += -pthread
 cve-2017-17053:	CFLAGS += -pthread
 
 cve-2015-3290:	CFLAGS += -pthread
+cve-2017-15649: CFLAGS += -pthread
 
 include $(top_srcdir)/include/mk/generic_leaf_target.mk
