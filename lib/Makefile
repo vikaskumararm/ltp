@@ -20,6 +20,8 @@
 # Ngie Cooper, July 2009
 #
 
+.PHONY: check
+
 top_srcdir		?= ..
 
 include $(top_srcdir)/include/mk/env_pre.mk
@@ -44,3 +46,6 @@ $(pc_file):
 
 include $(top_srcdir)/include/mk/lib.mk
 include $(top_srcdir)/include/mk/generic_trunk_target.mk
+
+check:
+	$(MAKE) -C lib/newlib_tests $@

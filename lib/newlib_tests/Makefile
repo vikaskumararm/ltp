@@ -1,5 +1,7 @@
 top_srcdir		?= ../..
 
+.PHONY: check
+
 include $(top_srcdir)/include/mk/env_pre.mk
 
 CFLAGS			+= -W -Wall
@@ -16,5 +18,7 @@ ifeq ($(ANDROID),1)
 FILTER_OUT_MAKE_TARGETS	+= test08
 endif
 
-
 include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+check: | $(MAKE_TARGETS)
+	./run.sh

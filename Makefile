@@ -83,7 +83,10 @@ all: $(addsuffix -all,$(COMMON_TARGETS)) Version
 
 $(MAKE_TARGETS): lib-all libs-all
 
-.PHONY: include-all include-install
+.PHONY: check include-all include-install
+check:
+	$(MAKE) -C lib/newlib_tests $@
+
 include-install: $(top_builddir)/include/config.h include/mk/config.mk include-all
 
 INSTALL_DIR		:= $(DESTDIR)/$(prefix)
