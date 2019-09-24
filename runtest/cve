@@ -39,3 +39,4 @@ cve-2017-1000380 snd_timer01
 cve-2018-5803 sctp_big_chunk
 cve-2018-1000001 realpath01
 cve-2018-19854 crypto_user01
+cve-2017-15649 cve-2017-15649
