@@ -228,8 +228,12 @@ static void setup(void)
 
 	fd_test = SAFE_OPEN(FILE_MNTED_PATH, O_RDWR | O_CREAT, 0664);
 	TEST(sys_copy_file_range(fd, 0, fd_test, 0, CONTSIZE, 0));
-	if (TST_ERR == EXDEV)
+	if (TST_ERR == EXDEV) {
+		fprintf(stderr, "%s:%d %s(): NO CROSS SUPPORT :(\n", __FILE__, __LINE__, __func__); // FIXME: debug
 		cross_sup = 0;
+	} else {
+		fprintf(stderr, "%s:%d %s(): YES CROSS SUPPORT :)\n", __FILE__, __LINE__, __func__); // FIXME: debug
+	}
 
 	SAFE_CLOSE(fd_test);
 	remove(FILE_MNTED_PATH);
