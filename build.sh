@@ -101,8 +101,11 @@ run_configure()
 		exit 1
 	fi
 
-	echo "== include/config.h =="
-	cat include/config.h
+	for i in include/config.h config.log; do
+		echo "== $i =="
+		cat $i
+		echo "== end of $i =="
+	done
 }
 
 usage()
