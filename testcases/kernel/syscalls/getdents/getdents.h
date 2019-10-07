@@ -55,9 +55,11 @@ struct linux_dirent64 {
 };
 
 #if HAVE_GETDENTS64
+#warn pev: if HAVE_GETDENTS64
 #include <dirent.h>
 #include <unistd.h>
 #else
+#warn pev: else HAVE_GETDENTS64
 static inline int
 getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
 {
