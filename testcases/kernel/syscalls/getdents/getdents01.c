@@ -19,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "getdents.h"
+
 #include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -27,7 +29,6 @@
 
 #include "test.h"
 #include "safe_macros.h"
-#include "getdents.h"
 
 static void cleanup(void);
 static void setup(void);
