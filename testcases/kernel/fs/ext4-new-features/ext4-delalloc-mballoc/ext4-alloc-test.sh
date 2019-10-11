@@ -117,7 +117,7 @@ ext4_test_delalloc_mballoc()
 # main
 ext4_setup
 
-tst_test_cmds ffsb
+tst_require_cmds ffsb
 
 DELALLOC=( "delalloc" "nodelalloc" )
 DIRECT_IO=( 0 1 )

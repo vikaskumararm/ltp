@@ -94,7 +94,7 @@ ext4_test_journal_checksum()
 # main
 ext4_setup
 
-tst_test_cmds ffsb
+tst_require_cmds ffsb
 
 DATA=( "writeback" "ordered" "journal" )
 COMMIT=( 1 100 )
