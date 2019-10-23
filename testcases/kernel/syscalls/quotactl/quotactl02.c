@@ -23,10 +23,6 @@
 #include <sys/quota.h>
 #include "config.h"
 
-#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
-# include <sys/quota.h>
-#endif
-
 #if defined(HAVE_XFS_QUOTA)
 # include <xfs/xqm.h>
 #endif
@@ -34,7 +30,7 @@
 #include "tst_test.h"
 #include "lapi/quotactl.h"
 
-#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
+#if defined(HAVE_XFS_QUOTA)
 static void check_qoff(int, char *);
 static void check_qon(int, char *);
 static void check_qlim(int, char *);
@@ -172,5 +168,5 @@ static struct tst_test test = {
 	.setup = setup,
 };
 #else
-	TST_TEST_TCONF("This system didn't support quota or xfs quota");
+	TST_TEST_TCONF("This system didn't support xfs quota");
 #endif

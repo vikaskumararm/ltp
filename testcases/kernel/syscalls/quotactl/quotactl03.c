@@ -29,10 +29,7 @@
 #include <stdio.h>
 #include <sys/quota.h>
 #include "config.h"
-
-#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
-# include <sys/quota.h>
-#endif
+#include <sys/quota.h>
 
 #if defined(HAVE_XFS_QUOTA)
 # include <xfs/xqm.h>
@@ -41,7 +38,7 @@
 #include "tst_test.h"
 #include "lapi/quotactl.h"
 
-#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
+#if defined(HAVE_XFS_QUOTA)
 
 static const char mntpoint[] = "mnt_point";
 static uint32_t test_id = 0xfffffffc;
@@ -84,5 +81,5 @@ static struct tst_test test = {
 };
 
 #else
-	TST_TEST_TCONF("This system didn't support quota or xfs quota");
+	TST_TEST_TCONF("This system didn't support xfs quota");
 #endif
