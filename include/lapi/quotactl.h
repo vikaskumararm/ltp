@@ -10,6 +10,14 @@
 
 #include <linux/quota.h>
 
+# ifndef Q_XQUOTARM
+#  define Q_XQUOTARM XQM_CMD(6)
+# endif
+
+# ifndef Q_XGETQSTATV
+#  define Q_XGETQSTATV XQM_CMD(8)
+# endif
+
 # ifndef Q_XGETNEXTQUOTA
 #  define Q_XGETNEXTQUOTA XQM_CMD(9)
 # endif
