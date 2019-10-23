@@ -30,16 +30,11 @@
 #include <sys/quota.h>
 #include "config.h"
 #include <sys/quota.h>
-
-#if defined(HAVE_XFS_QUOTA)
-# include <xfs/xqm.h>
-#endif
-
 #include "tst_test.h"
 #include "lapi/quotactl.h"
 
-#if defined(HAVE_XFS_QUOTA)
-
+#if defined(HAVE_XFS_XQM_H)
+#include <xfs/xqm.h>
 static const char mntpoint[] = "mnt_point";
 static uint32_t test_id = 0xfffffffc;
 
@@ -70,9 +65,15 @@ static void verify_quota(void)
 	}
 }
 
+static const char *kconfigs[] = {
+	"CONFIG_XFS_QUOTA",
+	NULL
+};
+
 static struct tst_test test = {
 	.needs_tmpdir = 1,
 	.needs_root = 1,
+	.needs_kconfigs = kconfigs,
 	.test_all = verify_quota,
 	.mount_device = 1,
 	.dev_fs_type = "xfs",
@@ -81,5 +82,5 @@ static struct tst_test test = {
 };
 
 #else
-	TST_TEST_TCONF("This system didn't support xfs quota");
+	TST_TEST_TCONF("This system didn't have <xfs/xqm.h>");
 #endif
