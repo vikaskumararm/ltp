@@ -10,6 +10,10 @@
 
 #include <linux/quota.h>
 
+# ifndef PRJQUOTA
+#  define PRJQUOTA 2
+# endif
+
 # ifndef Q_XQUOTARM
 #  define Q_XQUOTARM XQM_CMD(6)
 # endif
