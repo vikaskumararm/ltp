@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
 * Copyright (c) Crackerjack Project., 2007
-* Copyright (c) 2016 Fujitsu Ltd.
+* Copyright (c) 2016-2019 FUJITSU LIMITED. All rights reserved
 * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 *
 * This testcase checks the basic flag of quotactl(2) for non-XFS filesystems:
@@ -16,19 +16,23 @@
 *    flag for user.
 * 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for user.
 * 7) quotactl(2) succeeds to update quota usages with Q_SYNC flag for user.
-* 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
-* 9) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
-* 10) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
+* 8) quotactl(2) succeeds to get disk quota limit greater than or equal to
+*    ID with Q_GETNEXTSTAT flag for user.
+* 9) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
+* 10) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
+* 11) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
 *     for group.
-* 11) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
+* 12) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
 *     for group.
-* 12) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
+* 13) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
 *     flag for group.
-* 13) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
+* 14) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
 *     flag for group.
-* 14) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
-* 15) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
-* 16) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
+* 15) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
+* 16) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
+* 17) quotactl(2) succeeds to get disk quota limit greater than or equal to
+*     ID with Q_GETNEXTSTAT flag for group.
+* 18) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
 */
 
 #include <errno.h>
@@ -36,10 +40,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "config.h"
-
+#include <sys/quota.h>
 #include "tst_test.h"
-
-# include <sys/quota.h>
+#include "lapi/quotactl.h"
 
 #  define QFMT_VFS_V0     2
 #  define USRPATH MNTPOINT "/aquota.user"
@@ -63,6 +66,10 @@ static struct dqinfo set_qf = {
 static struct dqinfo res_qf;
 static int32_t fmt_buf;
 
+#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
+static struct if_nextdqblk res_ndq;
+#endif
+
 static struct tcase {
 	int cmd;
 	int *id;
@@ -70,60 +77,73 @@ static struct tcase {
 	void *set_data;
 	void *res_data;
 	int sz;
+	int nflag;
 	char *des;
 } tcases[] = {
 	{QCMD(Q_QUOTAON, USRQUOTA), &fmt_id, USRPATH,
-	NULL, NULL, 0, "turn on quota for user"},
+	NULL, NULL, 0, 0, "turn on quota for user"},
 
 	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dq,
-	NULL, NULL, 0, "set disk quota limit for user"},
+	NULL, NULL, 0, 0, "set disk quota limit for user"},
 
 	{QCMD(Q_GETQUOTA, USRQUOTA), &test_id, &res_dq,
 	&set_dq.dqb_bsoftlimit, &res_dq.dqb_bsoftlimit,
-	sizeof(res_dq.dqb_bsoftlimit), "get disk quota limit for user"},
+	sizeof(res_dq.dqb_bsoftlimit), 0, "get disk quota limit for user"},
 
 	{QCMD(Q_SETINFO, USRQUOTA), &test_id, &set_qf,
-	NULL, NULL, 0, "set information about quotafile for user"},
+	NULL, NULL, 0, 0, "set information about quotafile for user"},
 
 	{QCMD(Q_GETINFO, USRQUOTA), &test_id, &res_qf,
-	&set_qf.dqi_bgrace, &res_qf.dqi_bgrace, sizeof(res_qf.dqi_bgrace),
+	&set_qf.dqi_bgrace, &res_qf.dqi_bgrace, sizeof(res_qf.dqi_bgrace), 0,
 	"get information about quotafile for user"},
 
 	{QCMD(Q_GETFMT, USRQUOTA), &test_id, &fmt_buf,
-	&fmt_id, &fmt_buf, sizeof(fmt_buf),
+	&fmt_id, &fmt_buf, sizeof(fmt_buf), 0,
 	"get quota format for user"},
 
 	{QCMD(Q_SYNC, USRQUOTA), &test_id, &res_dq,
-	NULL, NULL, 0, "update quota usages for user"},
+	NULL, NULL, 0, 0, "update quota usages for user"},
+
+#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
+	{QCMD(Q_GETNEXTQUOTA, USRQUOTA), &test_id, &res_ndq,
+	&test_id, &res_ndq.dqb_id, sizeof(res_ndq.dqb_id), 1,
+	"get next disk quota limit for user"},
+#endif
 
 	{QCMD(Q_QUOTAOFF, USRQUOTA), &test_id, USRPATH,
-	NULL, NULL, 0, "turn off quota for user"},
+	NULL, NULL, 0, 0, "turn off quota for user"},
 
 	{QCMD(Q_QUOTAON, GRPQUOTA), &fmt_id, GRPPATH,
-	NULL, NULL, 0, "turn on quota for group"},
+	NULL, NULL, 0, 0, "turn on quota for group"},
 
 	{QCMD(Q_SETQUOTA, GRPQUOTA), &test_id, &set_dq,
-	NULL, NULL, 0, "set disk quota limit for group"},
+	NULL, NULL, 0, 0, "set disk quota limit for group"},
 
 	{QCMD(Q_GETQUOTA, GRPQUOTA), &test_id, &res_dq, &set_dq.dqb_bsoftlimit,
-	&res_dq.dqb_bsoftlimit, sizeof(res_dq.dqb_bsoftlimit),
+	&res_dq.dqb_bsoftlimit, sizeof(res_dq.dqb_bsoftlimit), 0,
 	"set disk quota limit for group"},
 
 	{QCMD(Q_SETINFO, GRPQUOTA), &test_id, &set_qf,
-	NULL, NULL, 0, "set information about quotafile for group"},
+	NULL, NULL, 0, 0, "set information about quotafile for group"},
 
 	{QCMD(Q_GETINFO, GRPQUOTA), &test_id, &res_qf, &set_qf.dqi_bgrace,
-	&res_qf.dqi_bgrace, sizeof(res_qf.dqi_bgrace),
+	&res_qf.dqi_bgrace, sizeof(res_qf.dqi_bgrace), 0,
 	"get information about quotafile for group"},
 
 	{QCMD(Q_GETFMT, GRPQUOTA), &test_id, &fmt_buf,
-	&fmt_id, &fmt_buf, sizeof(fmt_buf), "get quota format for group"},
+	&fmt_id, &fmt_buf, sizeof(fmt_buf), 0, "get quota format for group"},
 
 	{QCMD(Q_SYNC, GRPQUOTA), &test_id, &res_dq,
-	NULL, NULL, 0, "update quota usages for group"},
+	NULL, NULL, 0, 0, "update quota usages for group"},
+
+#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
+	{QCMD(Q_GETNEXTQUOTA, GRPQUOTA), &test_id, &res_ndq,
+	&test_id, &res_ndq.dqb_id, sizeof(res_ndq.dqb_id), 1,
+	"get next disk quota limit for group"},
+#endif
 
 	{QCMD(Q_QUOTAOFF, GRPQUOTA), &test_id, GRPPATH,
-	NULL, NULL, 0, "turn off quota for group"}
+	NULL, NULL, 0, 0, "turn off quota for group"}
 };
 
 static void setup(void)
@@ -156,9 +176,15 @@ static void verify_quota(unsigned int n)
 
 	res_dq.dqb_bsoftlimit = 0;
 	res_qf.dqi_igrace = 0;
+#if defined(HAVE_STRUCT_IF_NEXTDQBLK)
+	res_ndq.dqb_id = -1;
+#endif
 	fmt_buf = 0;
-
 	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
+	if (TST_ERR == ENOSYS && tc->nflag) {
+		tst_res(TCONF, "Current system doesn't support Q_GETNEXTQUOTA, it needs kernel>=4.6!");
+		return;
+	}
 	if (TST_RET == -1) {
 		tst_res(TFAIL | TTERRNO, "quotactl failed to %s", tc->des);
 		return;
