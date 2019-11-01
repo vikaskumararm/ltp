@@ -9,4 +9,6 @@ yum -y install \
 	clang \
 	gcc \
 	findutils \
+	libmnl \
+	pkg-config \
 	redhat-lsb-core
