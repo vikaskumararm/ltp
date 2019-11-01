@@ -9,9 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "tst_safe_stdio.h"
 
 #define MAX_IPV4_PREFIX 32
 #define MAX_IPV6_PREFIX 128
+
+#define MAX_IPV4_NET_ID 255
+#define MAX_IPV6_NET_ID 65535
 
 #define tst_res_comment(...) { \
 	fprintf(stderr, "# "); \
@@ -155,4 +159,70 @@ static inline void setup_addrinfo(const char *src_addr, const char *port,
 
 	if (!*addr_info)
 		tst_brk(TBROK, "failed to get the address");
+}
+
+#define TST_IPADDR_UN(ai_family, net, host) \
+	(tst_ipaddr_un(ai_family, net, host, 0, 0, 0, 0))
+
+#define TST_IPADDR_UN_HOST(ai_family, net, host, min_host, max_host) \
+	(tst_ipaddr_un(ai_family, net, host, min_host, max_host, 0, 0))
+
+#define TST_IPADDR_UN_NET(ai_family, net, host, min_net, max_net) \
+	(tst_ipaddr_un(ai_family, net, host, 0, 0, min_net, max_net))
+/*
+ * NOTE: unlike shell implementation this support only
+ * tst_ipaddr_un [-h MIN,MAX] [-n MIN,MAX] NET_ID HOST_ID
+ * TODO: -c COUNTER
+ */
+static inline char *tst_ipaddr_un(int ai_family, unsigned int net, unsigned int host,
+								  unsigned int min_host, unsigned int max_host,
+								  unsigned int min_net, unsigned int max_net)
+{
+	char *env = "IPV4_NET16_UNUSED";
+	unsigned int default_max = MAX_IPV4_NET_ID;
+	char *addr, *unused;
+
+	if (ai_family != AF_INET && ai_family != AF_INET6)
+		tst_brk(TBROK, "ai_family must be AF_INET or AF_INET6 (%d)", ai_family);
+
+	unused = getenv(env);
+	if (!unused)
+		tst_brk(TBROK, "%s not set (set it with tst_net.sh)", env);
+
+	if (ai_family == AF_INET6) {
+		env = "IPV6_NET32_UNUSED";
+		default_max = MAX_IPV6_NET_ID;
+	}
+
+	if (!max_host)
+		max_host = default_max - 1;
+
+	if (!max_net)
+		max_net = default_max;
+
+	if (min_host > max_host)
+		tst_brk(TBROK, "max HOST_ID (%d) must be >= min HOST_ID (%d)",
+				max_host, min_host);
+
+	if (min_net > max_net)
+		tst_brk(TBROK, "max NET_ID (%d) must be >= min NET_ID (%d)",
+				max_net, min_net);
+
+	host %= host % (max_host - min_host + 1) + min_host;
+	net = net % (max_net - min_net + 1) + min_net;
+
+	if (ai_family == AF_INET6) {
+		if (host > 0 && net > 0)
+			SAFE_ASPRINTF(&addr, "%s:%x::%x", unused, net, host);
+		else if (host > 0 && net == 0)
+			SAFE_ASPRINTF(&addr, "%s::%x", unused, host);
+		else if (net > 0 && host == 0)
+			SAFE_ASPRINTF(&addr, "%s:%x::", unused, net);
+		else
+			SAFE_ASPRINTF(&addr, "%s::", unused);
+	} else {
+		SAFE_ASPRINTF(&addr, "%s.%d.%d", unused, net, host);
+	}
+
+	return strdup(addr);
 }
