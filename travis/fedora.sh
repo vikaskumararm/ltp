@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
+# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
 set -e
 
 yum -y install \
@@ -9,4 +9,6 @@ yum -y install \
 	clang \
 	gcc \
 	findutils \
+	libmnl-devel \
+	pkg-config \
 	redhat-lsb-core
