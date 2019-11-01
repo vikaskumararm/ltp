@@ -13,6 +13,10 @@
 #endif
 #include <sys/quota.h>
 
+#ifndef PRJQUOTA
+# define PRJQUOTA 2
+#endif
+
 # ifndef Q_XGETQSTATV
 #  define Q_XGETQSTATV XQM_CMD(8)
 # endif
