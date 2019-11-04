@@ -133,17 +133,15 @@ struct fanotify_event_info_header {
 	uint8_t pad;
 	uint16_t len;
 };
+#endif /* ! FAN_REPORT_FID */
 
 #ifdef HAVE_NAME_TO_HANDLE_AT
-struct fanotify_event_info_fid {
+struct lapi_fanotify_event_info_fid {
 	struct fanotify_event_info_header hdr;
 	__kernel_fsid_t fsid;
 	unsigned char handle[0];
 };
-#endif /* HAVE_NAME_TO_HANDLE_AT */
-#endif /* ! FAN_REPORT_FID */
 
-#ifdef HAVE_NAME_TO_HANDLE_AT
 /*
  * Helper function used to obtain fsid and file_handle for a given path.
  * Used by test files correlated to FAN_REPORT_FID functionality.

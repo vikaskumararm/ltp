@@ -159,7 +159,7 @@ static void do_test(unsigned int number)
 
 	struct file_handle *event_file_handle;
 	struct fanotify_event_metadata *metadata;
-	struct fanotify_event_info_fid *event_fid;
+	struct lapi_fanotify_event_info_fid *event_fid;
 	struct test_case_t *tc = &test_cases[number];
 	struct fanotify_mark_type *mark = &tc->mark;
 
@@ -207,7 +207,7 @@ static void do_test(unsigned int number)
 	for (i = 0, metadata = (struct fanotify_event_metadata *) events_buf;
 		FAN_EVENT_OK(metadata, len);
 		metadata = FAN_EVENT_NEXT(metadata, len), i++) {
-		event_fid = (struct fanotify_event_info_fid *) (metadata + 1);
+		event_fid = (struct lapi_fanotify_event_info_fid *) (metadata + 1);
 		event_file_handle = (struct file_handle *) event_fid->handle;
 
 		/* File descriptor is redundant with FAN_REPORT_FID */
