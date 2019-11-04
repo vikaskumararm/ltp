@@ -53,7 +53,7 @@ static void do_test(void)
 
 	struct file_handle *event_file_handle;
 	struct fanotify_event_metadata *metadata;
-	struct fanotify_event_info_fid *event_fid;
+	struct lapi_fanotify_event_info_fid *event_fid;
 
 	if (fanotify_mark(fanotify_fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
 				FAN_CREATE | FAN_DELETE | FAN_ATTRIB |
@@ -125,7 +125,7 @@ static void do_test(void)
 	for (i = 0, metadata = (struct fanotify_event_metadata *) events_buf;
 		FAN_EVENT_OK(metadata, len);
 		metadata = FAN_EVENT_NEXT(metadata,len), i++) {
-		event_fid = (struct fanotify_event_info_fid *) (metadata + 1);
+		event_fid = (struct lapi_fanotify_event_info_fid *) (metadata + 1);
 		event_file_handle = (struct file_handle *) event_fid->handle;
 
 		if (i >= count) {
