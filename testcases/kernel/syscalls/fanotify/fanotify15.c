@@ -192,8 +192,8 @@ static void do_test(void)
 				"fid=%x.%x.%lx values",
 				metadata->mask,
 				getpid(),
-				event_fid->fsid.val[0],
-				event_fid->fsid.val[1],
+				event_fid->fsid.__val[0],
+				event_fid->fsid.__val[1],
 				*(unsigned long *)
 				event_file_handle->f_handle);
 		}
