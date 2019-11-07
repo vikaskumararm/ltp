@@ -1190,8 +1190,8 @@ unsigned int tst_multiply_timeout(unsigned int timeout)
 			timeout_mul = 1;
 		}
 	}
-	if (timeout_mul < 1)
-		tst_brk(TBROK, "LTP_TIMEOUT_MUL must to be int >= 1! (%.2f)",
+	if (timeout_mul <= 0)
+		tst_brk(TBROK, "LTP_TIMEOUT_MUL must to be int >= 0! (%.2f)",
 				timeout_mul);
 
 	if (timeout < 1)
