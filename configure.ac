@@ -195,6 +195,17 @@ AC_ARG_WITH([realtime-testsuite],
   [with_realtime_testsuite=no]
 )
 
+AC_ARG_WITH([syzkaller-repros],
+  [AC_HELP_STRING([--with-syzkaller-repros],
+    [compile and install Syzkaller reproducers (default=no)])],
+  [with_syzkaller_repros=$withval]
+)
+if test "x$with_syzkaller_repros" = xyes; then
+    AC_SUBST([WITH_SYZKALLER_REPROS],["yes"])
+else
+    AC_SUBST([WITH_SYZKALLER_REPROS],["no"])
+fi
+
 if test "x$with_realtime_testsuite" = xyes; then
     AC_SUBST([WITH_REALTIME_TESTSUITE],["yes"])
     # Run configure on testcases/realtime as well.
