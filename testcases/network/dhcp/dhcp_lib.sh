@@ -144,6 +144,7 @@ EOF
 			tst_res TINFO "wicked config file $wicked_cfg already exist"
 		fi
 
+		tst_res TINFO "$(wicked --version)"
 		tst_res TINFO "restarting wicked"
 		systemctl restart wicked
 	else
