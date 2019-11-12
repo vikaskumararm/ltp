@@ -35,11 +35,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#if defined(HAVE_SYS_FANOTIFY_H)
+#ifdef HAVE_LINUX_FANOTIFY_H
+#include <linux/fanotify.h>
 
-#include <sys/fanotify.h>
-
-#else /* HAVE_SYS_FANOTIFY_H */
+#else /* HAVE_LINUX_FANOTIFY_H */
 
 /* fanotify(7) wrappers */
 
@@ -57,7 +56,7 @@ static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
 	return syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname);
 }
 
-#endif /* HAVE_SYS_FANOTIFY_H */
+#endif /* HAVE_LINUX_FANOTIFY_H */
 
 #ifndef FAN_REPORT_TID
 #define FAN_REPORT_TID		0x00000100

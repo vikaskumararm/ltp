@@ -39,6 +39,7 @@ AC_CHECK_HEADERS([ \
     linux/cgroupstats.h \
     linux/cryptouser.h \
     linux/dccp.h \
+    linux/fanotify.h \
     linux/genetlink.h \
     linux/if_alg.h \
     linux/if_packet.h \

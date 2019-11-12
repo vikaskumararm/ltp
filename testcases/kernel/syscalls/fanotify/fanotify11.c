@@ -29,10 +29,9 @@
 #include <linux/limits.h>
 #include "tst_test.h"
 #include "tst_safe_pthread.h"
-#include "fanotify.h"
 
-#if defined(HAVE_SYS_FANOTIFY_H)
-#include <sys/fanotify.h>
+#ifdef HAVE_LINUX_FANOTIFY_H
+#include "fanotify.h"
 
 #define gettid() syscall(SYS_gettid)
 static int tid;
