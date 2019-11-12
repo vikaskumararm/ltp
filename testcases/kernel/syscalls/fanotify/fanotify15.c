@@ -20,10 +20,9 @@
 #include <sys/types.h>
 
 #include "tst_test.h"
-#include "fanotify.h"
 
-#if defined(HAVE_SYS_FANOTIFY_H)
-#include <sys/fanotify.h>
+#ifdef HAVE_LINUX_FANOTIFY_H
+#include <linux/fanotify.h>
 
 #define BUF_SIZE 256
 #define EVENT_MAX 256
