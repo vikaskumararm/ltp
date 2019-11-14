@@ -152,6 +152,14 @@ EOF
 		dhclient -$TST_IPVER $iface1 || tst_brk TBROK "dhclient failed"
 	fi
 
+	#local cmd="ip -$TST_IPVER addr show $iface1"
+	local cmd
+	for cmd in "ip -$TST_IPVER addr show $iface1" "ip addr show"; do
+		tst_res TINFO "DEBUG $cmd, searching for $ip_addr_check"
+		$cmd
+		tst_res TINFO "-----"
+	done
+
 	# check that we get configured ip address
 	ip addr show $iface1 | grep -q $ip_addr_check
 	if [ $? -eq 0 ]; then
