@@ -42,12 +42,13 @@ dhcp_lib_setup()
 	if [ $TST_IPV6 ]; then
 		ip_addr="fd00:1:1:2::12/64"
 		ip_addr_check_noprefix="fd00:1:1:2::100"
-		ip_addr_check="$ip_addr_check_noprefix/128"
+		prefix_check="128"
 	else
 		ip_addr="10.1.1.12/24"
 		ip_addr_check_noprefix="10.1.1.100"
-		ip_addr_check="$ip_addr_check_noprefix/24"
+		prefix_check="24"
 	fi
+	ip_addr_check="$ip_addr_check_noprefix/$prefix_check"
 
 	lsmod | grep -q '^veth ' && veth_loaded=yes || veth_loaded=no
 
@@ -134,19 +135,33 @@ test01()
 		tst_res TINFO "wicked is running, don't start dhclient"
 		if [ ! -f "$wicked_cfg" ]; then
 			cat <<EOF > $wicked_cfg
-BOOTPROTO='dhcp'
+BOOTPROTO='dhcp$TST_IPVER'
 NAME='LTP card'
 STARTMODE='auto'
 USERCONTROL='no'
 EOF
+		if [ $TST_IPV6 ]; then
+			cat <<EOF >> $wicked_cfg
+#DHCLIENT6_MODE=auto
+DHCLIENT6_MODE=managed
+DHCLIENT6_ADDRESS_LENGTH=$prefix_check
+EOF
+		fi
 			wicked_cleanup=1
 		else
 			tst_res TINFO "wicked config file $wicked_cfg already exist"
 		fi
 
+		# FIXME: debug
+		echo "=== $wicked_cfg ==="
+		cat $wicked_cfg
+		echo "====="
+		# FIXME: debug
+
 		tst_res TINFO "$(wicked --version)"
 		tst_res TINFO "restarting wicked"
-		systemctl restart wicked
+		#systemctl restart wicked
+		systemctl -q is-active wicked && wicked ifdown $iface1; wicked ifup $iface1
 	else
 		tst_res TINFO "starting dhclient -$TST_IPVER $iface1"
 		dhclient -$TST_IPVER $iface1 || tst_brk TBROK "dhclient failed"
