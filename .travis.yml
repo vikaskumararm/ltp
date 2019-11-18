@@ -5,6 +5,17 @@ services:
 
 matrix:
     include:
+        # native non-intel
+        - os: linux
+          arch: ppc64le
+          compiler: gcc
+          env: DISTRO=debian:stable
+
+        - os: linux
+          arch: s390x
+          compiler: gcc
+          env: DISTRO=debian:stable
+
         # 32 bit build
         - os: linux
           env: DISTRO=debian:stable VARIANT=i386
