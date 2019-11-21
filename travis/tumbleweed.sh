@@ -10,6 +10,7 @@ zypper --non-interactive install --no-recommends \
 	gcc \
 	gzip \
 	make \
+	perl \
 	kernel-default-devel \
 	keyutils-devel \
 	libacl-devel \
