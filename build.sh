@@ -15,9 +15,11 @@ CC="${CC:-gcc}"
 DEFAULT_PREFIX="$HOME/ltp-install"
 DEFAULT_BUILD="native"
 DEFAULT_TREE="in"
-CONFIGURE_OPTS_IN_TREE="--with-open-posix-testsuite --with-realtime-testsuite"
+
 # TODO: open posix testsuite is currently broken in out-tree-build. Enable it once it's fixed.
-CONFIGURE_OPTS_OUT_TREE="--with-realtime-testsuite"
+CONFIGURE_OPTS_OUT_TREE="--with-realtime-testsuite --with-syzkaller-repros=yes"
+CONFIGURE_OPTS_IN_TREE="$CONFIGURE_OPTS_OUT_TREE --with-open-posix-testsuite"
+
 MAKE_OPTS="-j$(getconf _NPROCESSORS_ONLN)"
 
 build_32()
