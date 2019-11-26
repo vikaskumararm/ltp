@@ -7,6 +7,7 @@ zypper --non-interactive install --no-recommends \
 	automake \
 	clang \
 	gcc \
+	git \
 	gzip \
 	make \
 	kernel-default-devel \

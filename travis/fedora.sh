@@ -8,5 +8,6 @@ yum -y install \
 	make \
 	clang \
 	gcc \
+	git \
 	findutils \
 	redhat-lsb-core
