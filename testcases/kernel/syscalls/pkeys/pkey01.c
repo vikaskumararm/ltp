@@ -61,13 +61,12 @@ static void setup(void)
 		size = getpagesize();
 		no_hugepage = 1;
 	} else {
-		int val;
-		SAFE_FILE_PRINTF(PATH_VM_NRHPS, "%d", 1);
-		SAFE_FILE_SCANF(PATH_VM_NRHPS, "%d", &val);
-		if (val != 1)
-			tst_brk(TBROK, "nr_hugepages = %d, but expect %d",
-					val, 1);
-		size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+		if (tst_request_hugepages(1)) {
+			size = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+		} else {
+			size = getpagesize();
+			no_hugepage = 1;
+		}
 	}
 
 	check_pkey_support();
