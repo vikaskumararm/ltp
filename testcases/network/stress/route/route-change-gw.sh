@@ -24,7 +24,9 @@ setup()
 
 test_gw()
 {
-	local gw="$(tst_ipaddr_un -h 2,254 1 $(($1 + 1)))"
+	local gw_max=254
+	[ "$TST_IPV6" ] && gw_max=65534
+	local gw="$(tst_ipaddr_un -h 2,$gw_max 1 $(($1 + 1)))"
 	local iface="$(tst_iface)"
 
 	tst_res TINFO "testing route over gateway '$gw'"
