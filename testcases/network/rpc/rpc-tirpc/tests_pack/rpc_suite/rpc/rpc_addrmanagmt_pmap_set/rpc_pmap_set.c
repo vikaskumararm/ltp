@@ -29,9 +29,7 @@
 #include <stdio.h>
 #include <rpc/rpc.h>
 
-//Standard define
-#define PROCNUM 1
-#define VERSNUM 1
+#include "rpc.h"
 
 int main(int argn, char *argc[])
 {

@@ -29,21 +29,7 @@
 #include <rpc/rpc.h>
 #include <utmp.h>
 
-//Standard define
-#define VERSNUM 1
-//Simple Ping proc
-#define PROCSIMPLEPING	1
-//RPC Error proc
-#define SVCGETCALLTEST	2
-#define PROGSYSERROR	10
-#define PROGAUTHERROR	100
-#define PROGWKAUTHERROR	101
-//DataInt procs
-#define INTPROCNUM 1000
-#define DBLPROCNUM 2000
-#define LNGPROCNUM 3000
-#define STRPROCNUM 4000
-#define SVCGETARGSPROC 5000
+#include "rpc.h"
 
 void rcp_service(register struct svc_req *rqstp, register SVCXPRT * transp);
 

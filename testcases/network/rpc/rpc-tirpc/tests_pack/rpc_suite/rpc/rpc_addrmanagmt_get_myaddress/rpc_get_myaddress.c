@@ -22,19 +22,10 @@
 *
 * History:
 * Created by: Cyril Lacabanne (Cyril.Lacabanne@bull.net)
-*
 */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <rpc/rpc.h>
-#include <netinet/in.h>
-#include <rpc/pmap_clnt.h>
-#include <netdb.h>
-
-//Standard define
-#define PROCNUM 1
-#define VERSNUM 1
+#include "rpc.h"
 
 int main(void)
 {

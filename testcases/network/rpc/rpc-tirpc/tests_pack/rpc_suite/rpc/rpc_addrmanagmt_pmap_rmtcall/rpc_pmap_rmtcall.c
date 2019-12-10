@@ -31,12 +31,7 @@
 #include <errno.h>
 #include <netdb.h>
 
-//Standard define
-#define PROCNUM 1
-#define VERSNUM 1
-
-//Sys define
-#define ADDRBUFSIZE 100
+#include "rpc.h"
 
 int main(int argn, char *argc[])
 {
