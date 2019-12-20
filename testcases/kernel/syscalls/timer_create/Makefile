@@ -20,6 +20,10 @@ top_srcdir		?= ../../../..
 
 include $(top_srcdir)/include/mk/testcases.mk
 
+ifeq ($(LIBC),musl)
+FILTER_OUT_MAKE_TARGETS        := timer_create01 timer_create03
+endif
+
 CPPFLAGS		+= -D_GNU_SOURCE -I$(abs_srcdir)/../include
 
 LDLIBS			+= -lpthread -lrt

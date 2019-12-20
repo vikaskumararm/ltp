@@ -20,4 +20,8 @@ top_srcdir		?= ../../../..
 
 include $(top_srcdir)/include/mk/testcases.mk
 
+ifeq ($(LIBC),musl)
+FILTER_OUT_MAKE_TARGETS        := accept4_01
+endif
+
 include $(top_srcdir)/include/mk/generic_leaf_target.mk
