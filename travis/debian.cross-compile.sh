@@ -16,7 +16,13 @@ esac
 dpkg --add-architecture $ARCH
 apt update
 
+EXTRA_PACKAGES="libtirpc-dev:$ARCH"
+case "$RPC" in
+libntirpc) EXTRA_PACKAGES="libntirpc-dev:$ARCH";;
+none) EXTRA_PACKAGES=;;
+esac
+
 apt install -y --no-install-recommends \
 	gcc-${gcc_arch}-linux-gnu \
 	libc6-dev-${ARCH}-cross \
-	libtirpc-dev:${ARCH}
+	$EXTRA_PACKAGES

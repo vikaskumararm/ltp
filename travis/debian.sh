@@ -8,6 +8,12 @@ grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/s
 
 apt update
 
+EXTRA_PACKAGES="libtirpc-dev"
+case "$RPC" in
+libntirpc) EXTRA_PACKAGES="libntirpc-dev";;
+none) EXTRA_PACKAGES=;;
+esac
+
 apt install -y --no-install-recommends \
 	acl-dev \
 	autoconf \
@@ -33,7 +39,7 @@ apt install -y --no-install-recommends \
 	libselinux1-dev \
 	libsepol1-dev \
 	libssl-dev \
-	libtirpc-dev \
 	linux-libc-dev \
 	lsb-release \
-	pkg-config
+	pkg-config \
+	$EXTRA_PACKAGES
