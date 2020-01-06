@@ -375,24 +375,22 @@ int tst_umount(const char *path)
 
 unsigned long tst_dev_bytes_written(const char *dev)
 {
-	struct stat st;
-	unsigned long dev_sec_write = 0, dev_bytes_written, io_ticks = 0;
-	char dev_stat_path[1024];
+	unsigned long dev_sec_write = 0, dev_bytes_written;
+	unsigned int io_ticks = 0;
+	char fmt[1024];
 
-	snprintf(dev_stat_path, sizeof(dev_stat_path), "/sys/block/%s/stat",
-		 strrchr(dev, '/') + 1);
+	sprintf(fmt, "%%*4d %%*7d %s %%*lu %%*lu %%*lu %%*u %%*lu %%*lu %%lu %%*u %%*u %%u",
+			strrchr(dev, '/') + 1);
 
-	if (stat(dev_stat_path, &st) != 0)
-		tst_brkm(TCONF, NULL, "Test device stat file: %s not found",
-			 dev_stat_path);
+	SAFE_FILE_LINES_SCANF(NULL, "/proc/diskstats", fmt, &dev_sec_write, &io_ticks);
 
-	SAFE_FILE_SCANF(NULL, dev_stat_path,
-			"%*s %*s %*s %*s %*s %*s %lu %*s %*s %lu",
-			&dev_sec_write, &io_ticks);
-
+	/* If we create block device by attaching a free loop device, loop driver
+	 * needs to support blk-mq(commit b5dd2f6047c), so that kernel can get I/O
+	 * statistics about loop device.
+	 */
 	if (!io_ticks)
-		tst_brkm(TCONF, NULL, "Test device stat file: %s broken",
-			 dev_stat_path);
+		tst_brkm(TCONF, NULL, "io_ticks on test device %s is always 0, "
+				"export LTP_DEV to test", dev);
 
 	dev_bytes_written = (dev_sec_write - prev_dev_sec_write) * 512;
 
