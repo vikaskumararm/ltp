@@ -14,6 +14,12 @@
 # include <tirpc/rpc/types.h>
 # include <tirpc/rpc/xdr.h>
 # include <tirpc/rpc/svc.h>
+#elif defined(HAVE_LIBNTIRPC)
+# include <ntirpc/netconfig.h>
+# include <ntirpc/rpc/rpc.h>
+# include <ntirpc/rpc/types.h>
+# include <ntirpc/rpc/xdr.h>
+# include <ntirpc/rpc/svc.h>
 #else
 # include <netconfig.h>
 # include <rpc/rpc.h>
