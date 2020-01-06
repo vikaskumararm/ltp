@@ -2,6 +2,12 @@
 # Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
 set -e
 
+EXTRA_PACKAGES="libtirpc-devel"
+case "$RPC" in
+libntirpc) EXTRA_PACKAGES="libntirpc-devel";;
+none) EXTRA_PACKAGES=;;
+esac
+
 yum -y install \
 	autoconf \
 	automake \
@@ -9,7 +15,6 @@ yum -y install \
 	clang \
 	gcc \
 	findutils \
-	libtirpc \
-	libtirpc-devel \
 	pkg-config \
-	redhat-lsb-core
+	redhat-lsb-core \
+	$EXTRA_PACKAGES
