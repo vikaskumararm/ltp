@@ -37,3 +37,7 @@ apt install -y --no-install-recommends \
 	linux-libc-dev \
 	lsb-release \
 	pkg-config
+
+if [ "$EXTRA_PACKAGES" ]; then
+	apt install -y --no-install-recommends $EXTRA_PACKAGES
+fi
