@@ -10,4 +10,5 @@ yum -y install \
 	gcc \
 	findutils \
 	libtirpc \
+	pkg-config \
 	redhat-lsb-core

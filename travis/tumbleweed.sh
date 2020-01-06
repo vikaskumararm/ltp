@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018 Petr Vorel <pvorel@suse.cz>
+# Copyright (c) 2018-2019 Petr Vorel <pvorel@suse.cz>
 set -e
 
 zypper --non-interactive install --no-recommends \
@@ -19,4 +19,5 @@ zypper --non-interactive install --no-recommends \
 	libselinux-devel \
 	libtirpc-devel \
 	linux-glibc-devel \
-	lsb-release
+	lsb-release \
+	pkg-config
