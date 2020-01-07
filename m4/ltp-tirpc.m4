@@ -1,15 +1,21 @@
 dnl SPDX-License-Identifier: GPL-2.0-or-later
+dnl Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
 dnl Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
 
-AC_DEFUN([LTP_CHECK_TIRPC],[
-	TIRPC_CPPFLAGS=""
-	TIRPC_LIBS=""
+AC_DEFUN([LTP_CHECK_TIRPC], [
+	dnl libtirpc library and headers
+	PKG_CHECK_MODULES([LIBTIRPC], [libtirpc], [
+		have_libtirpc=yes
+		TIRPC_CFLAGS=$LIBTIRPC_CFLAGS
+		TIRPC_LIBS=$LIBTIRPC_LIBS
+	], [have_libtirpc=no])
 
-	AC_CHECK_HEADERS([tirpc/netconfig.h netconfig.h], [
-		TIRPC_CPPFLAGS="-I${SYSROOT}/usr/include/tirpc"
-		AC_DEFINE(HAVE_LIBTIRPC, 1, [Define to 1 if you have libtirpc headers installed])
-		AC_CHECK_LIB(tirpc, rpcb_set, [TIRPC_LIBS="-ltirpc"])])
+	dnl TI-RPC headers (in glibc, since 2.26 installed only when configured with --enable-obsolete-rpc)
+	AC_CHECK_HEADERS([rpc/rpc.h], [have_rpc_headers=yes])
 
-	AC_SUBST(TIRPC_CPPFLAGS)
-	AC_SUBST(TIRPC_LIBS)
+	if test "x$have_libtirpc" = "xyes" -o "x$have_rpc_headers" = "xyes"; then
+		AC_SUBST(HAVE_RPC, 1)
+		AC_SUBST(TIRPC_CFLAGS)
+		AC_SUBST(TIRPC_LIBS)
+	fi
 ])
