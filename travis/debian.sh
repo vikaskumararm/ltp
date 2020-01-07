@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2018-2019 Petr Vorel <pvorel@suse.cz>
+# Copyright (c) 2018-2020 Petr Vorel <pvorel@suse.cz>
 set -e
 
 # workaround for missing oldstable-updates repository
@@ -35,4 +35,5 @@ apt install -y --no-install-recommends \
 	libssl-dev \
 	libtirpc-dev \
 	linux-libc-dev \
-	lsb-release
+	lsb-release \
+	pkg-config
