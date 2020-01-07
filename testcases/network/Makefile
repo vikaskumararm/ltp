@@ -39,7 +39,7 @@ ifeq ($(ANDROID),1)
 FILTER_OUT_DIRS		+= lib6 rpc sockets
 endif
 
-ifeq ($(TIRPC_LIBS),)
+ifeq ($(HAVE_TIRPC),)
 FILTER_OUT_DIRS		+= rpc
 endif
 
