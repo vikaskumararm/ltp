@@ -9,6 +9,7 @@
 
 #include "config.h"
 #include <sys/types.h>
+#include <unistd.h>
 #include "lapi/syscalls.h"
 
 #if !defined(HAVE_SYNCFS)

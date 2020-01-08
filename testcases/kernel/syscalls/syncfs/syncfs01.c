@@ -17,7 +17,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include "tst_test.h"
-#include "lapi/syncfs.h"
 #include "check_syncfs.h"
 
 #define MNTPOINT	"mnt_point"

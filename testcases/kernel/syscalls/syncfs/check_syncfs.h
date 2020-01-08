@@ -7,6 +7,8 @@
 #ifndef CHECK_SYNCFS_H
 #define CHECK_SYNCFS_H
 
+#include "lapi/syncfs.h"
+
 void check_syncfs(void)
 {
 	int ret;
