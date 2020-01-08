@@ -8,6 +8,13 @@ grep -v oldstable-updates /etc/apt/sources.list > /tmp/sources.list && mv /tmp/s
 
 apt update
 
+EXTRA_PACKAGES="libc6-dev $CC"
+if [ "$ARCH" ]; then
+	dpkg --add-architecture $ARCH
+	apt update
+	EXTRA_PACKAGES="gcc-${ARCH}-linux-gnu libc6-dev-${ARCH}-cross"
+fi
+
 apt install -y --no-install-recommends \
 	acl-dev \
 	autoconf \
@@ -15,16 +22,12 @@ apt install -y --no-install-recommends \
 	build-essential \
 	debhelper \
 	devscripts \
-	clang \
-	gcc \
 	libacl1 \
 	libacl1-dev \
 	libaio-dev \
 	libaio1 \
 	libcap-dev \
 	libcap2 \
-	libc6 \
-	libc6-dev \
 	libkeyutils-dev \
 	libkeyutils1 \
 	libmm-dev \
@@ -35,4 +38,5 @@ apt install -y --no-install-recommends \
 	libssl-dev \
 	libtirpc-dev \
 	linux-libc-dev \
-	lsb-release
+	lsb-release \
+	$EXTRA_PACKAGES
