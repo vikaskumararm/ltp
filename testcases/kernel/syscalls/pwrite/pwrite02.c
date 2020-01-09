@@ -18,6 +18,7 @@
  *      accessible address space, returns EFAULT.
  */
 
+#define _GNU_SOURCE
 #define _XOPEN_SOURCE 500
 
 #include <errno.h>
