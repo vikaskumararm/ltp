@@ -33,7 +33,7 @@ setup()
 	local swap_free=`cat /proc/meminfo | grep SwapFree | awk '{ print $2 }'`
 	local pgsize=`tst_getconf PAGESIZE`
 
-	MEM=$(( $mem_free + $swap_free / 2 ))
+	MEM=$(( $mem_free + $swap_free / 5 ))
 	MEM=$(( $MEM / 1024 ))
 	RUN_TIME=$(( 15 * 60 ))
 	[ "$pgsize" = "4096" ] && THREAD_SPARE_MB=1 || THREAD_SPARE_MB=8
