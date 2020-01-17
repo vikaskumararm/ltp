@@ -16,6 +16,10 @@
  * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/*
+ * NOTE: old glibc versions hide O_DIRECTORY under __USE_GNU
+ * => need to define _GNU_SOURCE when using this file.
+ */
 #ifndef __LAPI_FCNTL_H__
 #define __LAPI_FCNTL_H__
 

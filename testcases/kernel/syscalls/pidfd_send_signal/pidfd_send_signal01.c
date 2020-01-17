@@ -9,9 +9,9 @@
  * struct is passed.
  */
 
+#define _GNU_SOURCE
 #include <signal.h>
 #include <stdlib.h>
-#include "lapi/fcntl.h"
 #include "tst_safe_pthread.h"
 #include "pidfd_send_signal.h"
 

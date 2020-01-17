@@ -15,10 +15,10 @@
  * child using the pidfd of the first one.
  */
 
+#define _GNU_SOURCE
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "lapi/fcntl.h"
 #include "pidfd_send_signal.h"
 #include "tst_safe_pthread.h"
 
