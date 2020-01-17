@@ -23,6 +23,7 @@
 
 #include <pwd.h>
 #include <signal.h>
+#include "lapi/fcntl.h"
 #include "tst_safe_pthread.h"
 #include "pidfd_send_signal.h"
 
