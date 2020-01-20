@@ -19,7 +19,7 @@
 #define TST_DEVICE_H__
 
 #include <unistd.h>
-#include "lapi/syscalls.h"
+#include <sys/syscall.h>
 
 struct tst_device {
 	const char *dev;
@@ -78,7 +78,12 @@ int tst_detach_device(const char *dev_path);
  */
 static inline int tst_dev_sync(int fd)
 {
+#ifdef __NR_syncfs
 	return syscall(__NR_syncfs, fd);
+#else
+	sync();
+	return 0;
+#endif
 }
 
 /*
