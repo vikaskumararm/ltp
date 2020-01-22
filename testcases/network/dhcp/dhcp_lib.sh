@@ -160,8 +160,10 @@ EOF
 
 		tst_res TINFO "$(wicked --version)"
 		tst_res TINFO "restarting wicked"
-		#systemctl restart wicked
-		systemctl -q is-active wicked && wicked ifdown $iface1; wicked ifup $iface1
+		systemctl restart wicked
+		#systemctl -q is-active wicked && wicked ifdown $iface1; wicked ifup $iface1
+		tst_res TINFO "restarting wickedd"
+		systemctl restart wickedd
 	else
 		tst_res TINFO "starting dhclient -$TST_IPVER $iface1"
 		dhclient -$TST_IPVER $iface1 || tst_brk TBROK "dhclient failed"
