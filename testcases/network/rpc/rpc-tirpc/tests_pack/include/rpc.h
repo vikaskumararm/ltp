@@ -8,6 +8,10 @@
 
 #include "config.h"
 
+#ifdef HAVE_NETCONFIG_H
+# include <netconfig.h>
+#endif
+
 #include <rpc/rpc.h>
 #include <rpc/types.h>
 #include <rpc/xdr.h>

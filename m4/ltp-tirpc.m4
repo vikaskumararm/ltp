@@ -11,7 +11,7 @@ AC_DEFUN([LTP_CHECK_TIRPC], [
 	], [have_libtirpc=no])
 
 	dnl TI-RPC headers (in glibc, since 2.26 installed only when configured with --enable-obsolete-rpc)
-	AC_CHECK_HEADERS([rpc/rpc.h], [have_rpc_headers=yes])
+	AC_CHECK_HEADERS([rpc/rpc.h netconfig.h], [have_rpc_headers=yes])
 
 	if test "x$have_libtirpc" = "xyes" -o "x$have_rpc_headers" = "xyes"; then
 		AC_SUBST(HAVE_TIRPC, 1)
