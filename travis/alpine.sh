@@ -40,7 +40,6 @@ rm -rfv \
 	testcases/kernel/syscalls/getdents/getdents01.c \
 	testcases/kernel/syscalls/getdents/getdents02.c \
 	testcases/kernel/syscalls/ioctl/ioctl01.c \
-	testcases/kernel/syscalls/ioctl/ioctl02.c \
 	testcases/kernel/syscalls/rt_tgsigqueueinfo/rt_tgsigqueueinfo01.c \
 	testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c \
 	testcases/kernel/syscalls/timer_create/timer_create01.c \
