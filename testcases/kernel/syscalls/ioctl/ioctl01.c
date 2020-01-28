@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Copyright (c) International Business Machines  Corp., 2001
- *  07/2001 Ported by Wayne Boyer
- *  04/2002 Fixes by wjhuie
- */
-/*
- * DESCRIPTION
+ * Copyright (c) International Business Machines Corp., 2001
+ * Copyright (c) 2020 Petr Vorel <petr.vorel@gmail.com>
+ * 07/2001 Ported by Wayne Boyer
+ * 04/2002 Fixes by wjhuie
+ *
  *	Testcase to check the errnos set by the ioctl(2) system call.
  *
  * ALGORITHM
@@ -14,13 +13,13 @@
  *	3. EINVAL: Pass invalid cmd in ioctl(fd, cmd, arg)
  *	4. ENOTTY: Pass an non-streams fd in ioctl(fd, cmd, arg)
  *	5. EFAULT: Pass a NULL address for termio
- *
  */
 
+#include "config.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <termio.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include "tst_test.h"
 
@@ -29,6 +28,7 @@
 static int fd, fd_file;
 static int bfd = -1;
 
+#ifdef HAVE_STRUCT_TERMIO
 static struct termio termio;
 
 static struct tcase {
@@ -113,3 +113,7 @@ static struct tst_test test = {
 		{}
 	}
 };
+
+#else
+	TST_TEST_TCONF("libc doesn't provide legacy struct termio");
+#endif /* HAVE_STRUCT_TERMIO */
