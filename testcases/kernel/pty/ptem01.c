@@ -1,6 +1,6 @@
 /*
- *
  *   Copyright (c) International Business Machines  Corp., 2002
+ *   Copyright (c) 2020 Petr Vorel <pvorel@suse.cz>
  *
  *   This program is free software;  you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -24,19 +24,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <termio.h>
+#include <termios.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/poll.h>
 #include <sys/types.h>
 
 #ifndef _GNU_SOURCE
-#define _GNU_SOURCE 1
+#define _GNU_SOURCE
 #endif
 
-/** LTP Port **/
 #include "test.h"
 #include "safe_macros.h"
+#include "lapi/ioctl.h"
 
 char *TCID = "ptem01";		/* Test program identifier.    */
 int TST_TOTAL = 6;		/* Total number of test cases. */
