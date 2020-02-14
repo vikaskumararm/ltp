@@ -81,6 +81,7 @@ AC_CHECK_FUNCS([ \
     fallocate \
     fchownat \
     fsconfig \
+    fspick \
     fsmount \
     fsopen \
     fstatat \

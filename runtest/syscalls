@@ -545,6 +545,9 @@ fanotify15 fanotify15
 fsconfig01 fsconfig01
 fsconfig02 fsconfig02
 
+fspick01 fspick01
+fspick02 fspick02
+
 fsmount01 fsmount01
 fsmount02 fsmount02
 
