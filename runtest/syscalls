@@ -542,6 +542,9 @@ fanotify13 fanotify13
 fanotify14 fanotify14
 fanotify15 fanotify15
 
+fsconfig01 fsconfig01
+fsconfig02 fsconfig02
+
 fsopen01 fsopen01
 fsopen02 fsopen02
 
