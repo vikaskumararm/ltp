@@ -81,6 +81,7 @@ AC_CHECK_FUNCS([ \
     fallocate \
     fchownat \
     fsconfig \
+    fsmount \
     fsopen \
     fstatat \
     getdents \
