@@ -95,6 +95,7 @@ AC_CHECK_FUNCS([ \
     move_mount \
     name_to_handle_at \
     openat \
+    open_tree \
     pidfd_open \
     pidfd_send_signal \
     pkey_mprotect \
