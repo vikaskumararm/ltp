@@ -91,6 +91,7 @@ AC_CHECK_FUNCS([ \
     mkdirat \
     mknodat \
     modify_ldt \
+    move_mount \
     name_to_handle_at \
     openat \
     pidfd_open \
