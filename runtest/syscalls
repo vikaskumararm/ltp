@@ -542,6 +542,9 @@ fanotify13 fanotify13
 fanotify14 fanotify14
 fanotify15 fanotify15
 
+fsopen01 fsopen01
+fsopen02 fsopen02
+
 ioperm01 ioperm01
 ioperm02 ioperm02
 
