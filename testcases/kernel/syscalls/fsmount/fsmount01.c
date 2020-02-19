@@ -16,6 +16,7 @@
 
 #define LINELENGTH 256
 #define MNTPOINT "newmount_point"
+
 static int sfd, mfd, is_mounted;
 
 static int ismount(char *mntpoint)
@@ -38,6 +39,9 @@ static int ismount(char *mntpoint)
 
 static void cleanup(void)
 {
+	if (sfd > 0)
+		SAFE_CLOSE(sfd);
+
 	if (is_mounted)
 		SAFE_UMOUNT(MNTPOINT);
 }
@@ -67,7 +71,6 @@ static void test_fsmount(void)
 		tst_brk(TBROK | TTERRNO, "fsmount() failed to create a mount object");
 	mfd = TST_RET;
 	tst_res(TPASS, "fsmount() created a mount object");
-	SAFE_CLOSE(sfd);
 
 	TEST(move_mount(mfd, "", AT_FDCWD, MNTPOINT, MOVE_MOUNT_F_EMPTY_PATH));
 	if (TST_RET < 0)
