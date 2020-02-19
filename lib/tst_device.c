@@ -386,6 +386,31 @@ int tst_umount(const char *path)
 	return -1;
 }
 
+int tst_ismount(const char *path)
+{
+	char line[256];
+	FILE *file;
+	int ret = -1;
+
+	file = SAFE_FOPEN(NULL, "/proc/mounts", "r");
+
+	while (fgets(line, sizeof(line), file)) {
+		if (strstr(line, path) != NULL) {
+			ret = 0;
+			break;
+		}
+	}
+
+	SAFE_FCLOSE(NULL, file);
+
+	if (ret) {
+		errno = ENOENT;
+		tst_resm(TWARN, "No device is mounted at %s", path);
+	}
+
+	return ret;
+}
+
 int find_stat_file(const char *dev, char *path, size_t path_len)
 {
 	const char *devname = strrchr(dev, '/') + 1;
