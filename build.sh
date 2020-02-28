@@ -9,7 +9,7 @@
 
 set -e
 
-CFLAGS="${CFLAGS:--Werror=implicit-function-declaration}"
+CFLAGS="${CFLAGS:--Werror=implicit-function-declaration -Werror=missing-declarations}"
 CC="${CC:-gcc}"
 
 DEFAULT_PREFIX="$HOME/ltp-install"
