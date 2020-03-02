@@ -46,6 +46,15 @@ get_socket_type()
 	done
 }
 
+nfs_server_check_udp()
+{
+	local check_cmd="if [ -f /etc/nfs.conf ]; then grep '[[:space:]]*udp=' /etc/nfs.conf /etc/nfs.conf.local; fi"
+	if ! tst_rhost_run -c "$check_cmd"; then
+		# FIXME: debug
+		tst_brk TCONF "ERROR on UDP CHECK"
+	fi
+}
+
 nfs_setup_server()
 {
 	local export_cmd="exportfs -i -o fsid=$$,no_root_squash,rw *:$remote_dir"
@@ -105,6 +114,10 @@ nfs_setup()
 	for i in $VERSION; do
 		type=$(get_socket_type $n)
 		tst_res TINFO "setup NFSv$i, socket type $type"
+
+		if [ "$type" = "udp" ]; then
+			nfs_server_check_udp
+		fi
 
 		local_dir="$TST_TMPDIR/$i/$n"
 		remote_dir="$TST_TMPDIR/$i/$type"
