@@ -15,7 +15,7 @@
  *  timerfd: Protect the might cancel mechanism proper
  */
 #include <unistd.h>
-#include <lapi/timerfd.h>
+#include "lapi/timerfd.h"
 #include "tst_test.h"
 #include "tst_fuzzy_sync.h"
 #include "tst_taint.h"
