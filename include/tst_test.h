@@ -281,6 +281,53 @@ extern void *TST_RET_PTR;
 		TST_ERR = errno; \
 	} while (0)
 
+/* assert that syscall returned only 0 and nothing else */
+#define TST_ASSERT_SYSCALL(SCALL) \
+	TST_ASSERT_SYSCALL_IMPL(SCALL, __FILE__, __LINE__, #SCALL)
+
+#define TST_ASSERT_SYSCALL_IMPL(SCALL, FILENAME, LINENO, CALLSTR, ...) \
+	({ \
+		int _tst_ret; \
+		errno = 0; \
+		_tst_ret = SCALL; \
+		if (_tst_ret == -1) { \
+			int _tst_ttype = errno == ENOTSUP ? TCONF : TBROK; \
+			tst_brk_(FILENAME, LINENO, _tst_ttype | TERRNO, \
+				CALLSTR " failed", ##__VA_ARGS__); \
+		} \
+		if (_tst_ret != 0) { \
+			tst_brk_(FILENAME, LINENO, TBROK | TERRNO, \
+				CALLSTR " returned invalid value %d", \
+				##__VA_ARGS__, _tst_ret); \
+		} \
+		_tst_ret; \
+	})
+
+/*
+ * assert that syscall returned any non-negative value (e.g. valid file
+ * descriptor)
+ */
+#define TST_ASSERT_SYSCALL_FD(SCALL) \
+	TST_ASSERT_SYSCALL_FD_IMPL(SCALL, __FILE__, __LINE__, #SCALL)
+
+#define TST_ASSERT_SYSCALL_FD_IMPL(SCALL, FILENAME, LINENO, CALLSTR, ...) \
+	({ \
+		int _tst_ret; \
+		errno = 0; \
+		_tst_ret = SCALL; \
+		if (_tst_ret == -1) { \
+			int _tst_ttype = errno == ENOTSUP ? TCONF : TBROK; \
+			tst_brk_(FILENAME, LINENO, _tst_ttype | TERRNO, \
+				CALLSTR " failed", ##__VA_ARGS__); \
+		} \
+		if (_tst_ret < 0) { \
+			tst_brk_(FILENAME, LINENO, TBROK | TERRNO, \
+				CALLSTR " returned invalid value %d", \
+				##__VA_ARGS__, _tst_ret); \
+		} \
+		_tst_ret; \
+	})
+
 /*
  * Functions to convert ERRNO to its name and SIGNAL to its name.
  */
